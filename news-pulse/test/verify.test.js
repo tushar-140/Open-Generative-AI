@@ -101,3 +101,11 @@ test('headlines about unrelated places never merge; nested places can', async ()
   assert.deepEqual([...fp('Jaipur Murder: पत्नी की हत्या').places], ['IN:Jaipur']);
   assert.equal(matchScore(fp('Earthquake of magnitude 4.2 hits Bikaner'), fp('Earthquake of magnitude 5.1 hits Nepal')), 0);
 });
+
+test('templated results for different companies do not merge; same figures do', () => {
+  const fp = (t) => fingerprint(t);
+  const reliance = fp('रिलायंस इंडस्ट्रीज का दूसरी तिमाही में शुद्ध लाभ 41 प्रतिशत बढ़कर 25,548 करोड़ रुपये पर');
+  assert.equal(matchScore(reliance, fp('धनुका एग्रीटेक का शुद्ध लाभ दूसरी तिमाही में 16.24 प्रतिशत बढ़कर 109.22 करोड़ रुपये पर')), 0);
+  assert.equal(matchScore(reliance, fp('बैंक ऑफ बड़ौदा का दूसरी तिमाही में शुद्ध लाभ 31 प्रतिशत बढ़कर 6,737 करोड़ रुपये पर')), 0);
+  assert.ok(matchScore(reliance, fp('रिलायंस इंडस्ट्रीज़ का प्रॉफिट 41% उछलकर 25,548 करोड़ रुपए, रेवेन्यू में 29% की बढ़त')) > 0);
+});

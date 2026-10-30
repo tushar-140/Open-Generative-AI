@@ -222,16 +222,12 @@ const dot = (a, b) => {
 };
 const numbers = (tokens) => [...tokens].filter((t) => /^\d{2,}$/.test(t));
 
-// Meaning-level match from sentence embeddings (when available). Guard rails against the known
-// weaknesses of embeddings: they must share at least one specific term, and headlines quoting
-// different figures ("falls 500 points" vs "rises 300 points") are never merged this way.
+// Meaning-level match from sentence embeddings (when available). Guard rail against the known
+// weakness of embeddings (topical similarity): the headlines must share at least one specific term.
 export function semanticScore(a, b, isCommon, thresholds) {
   if (!a.vec || !b.vec || !thresholds) return 0;
   const cos = dot(a.vec, b.vec);
   if (cos < (a.script === b.script ? thresholds.sameLang : thresholds.crossLang)) return 0;
-  const na = numbers(a.tokens);
-  const nb = new Set(numbers(b.tokens));
-  if (na.length && nb.size && !na.some((n) => nb.has(n))) return 0;
   const shared =
     similarity(without(a.tokens, isCommon), without(b.tokens, isCommon)).inter +
     similarity(without(a.skel, (k) => isCommon(`~${k}`)), without(b.skel, (k) => isCommon(`~${k}`))).inter;
@@ -240,8 +236,16 @@ export function semanticScore(a, b, isCommon, thresholds) {
 
 // Returns a match score (0 = different stories). `isCommon(key)` drops terms that appear across
 // many stories in this feed (e.g. the feed's own place name), which otherwise cause false merges.
+// Headlines quoting entirely different figures are different events — this splits templated agency
+// copy such as "X का दूसरी तिमाही में शुद्ध लाभ N प्रतिशत बढ़कर M करोड़" across companies.
+export function numbersConflict(a, b) {
+  const na = numbers(a.tokens);
+  const nb = new Set(numbers(b.tokens));
+  return na.length > 0 && nb.size > 0 && !na.some((n) => nb.has(n));
+}
+
 export function matchScore(a, b, isCommon = () => false, thresholds = null) {
-  if (placesConflict(a, b)) return 0;
+  if (placesConflict(a, b) || numbersConflict(a, b)) return 0;
   return Math.max(lexicalScore(a, b, isCommon), semanticScore(a, b, isCommon, thresholds));
 }
 
@@ -249,7 +253,10 @@ function lexicalScore(a, b, isCommon) {
   if (a.script === b.script) {
     const ta = without(a.tokens, isCommon);
     const tb = without(b.tokens, isCommon);
-    return lexicalMatch(ta, tb) ? similarity(ta, tb).jaccard : 0;
+    const s = similarity(ta, tb);
+    // Two identical specific figures (e.g. "41%" and "25,548 crore") plus shared words are strong evidence.
+    const sharedFigures = numbers(ta).filter((n) => tb.has(n)).length;
+    return lexicalMatch(ta, tb) || (sharedFigures >= 2 && s.inter >= 4) ? s.jaccard : 0;
   }
   if (a.script === 'cjk' || b.script === 'cjk') return 0;
   const sa = without(a.skel, (k) => isCommon(`~${k}`));

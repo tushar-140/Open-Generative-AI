@@ -105,7 +105,7 @@ test('real Rajasthan politics headlines in Hindi and English cluster into biling
   assert.ok(stories.length >= 10, `expected separate stories, got ${stories.length}`);
 });
 
-test('region guard drops headlines explicitly about other places', async () => {
+test('region guard drops headlines explicitly about other places in state/city feeds', async () => {
   const poller = new Poller({ config, adapters: [], notifier: { notify: async () => {} }, books: new Map() });
   const raj = { id: 'raj2', country: 'IN', place: 'Rajasthan', domain: 'politics', keywords: [] };
   const ind = { id: 'ind2', country: 'IN', place: '', domain: 'markets', keywords: [] };
@@ -122,11 +122,7 @@ test('region guard drops headlines explicitly about other places', async () => {
   ]);
   const kept = poller.books.get('raj2').list().map((s) => s.title);
   assert.deepEqual(kept.sort(), ['CM Bhajanlal says Congress does not believe in democracy', 'Jaipur: Congress protests outside BJP office']);
-  await poller.ingest(ind, [
-    item('e', 'Pakistan Stock Market News, PSX Business News & Updates'),
-    item('f', 'US stock market crash today: Why are Dow Jones, Nasdaq falling?'),
-    item('g', 'Sensex Gains 308 Points, Nifty Reclaims 23,000'),
-    item('h', 'India-US trade deal lifts IT stocks'),
-  ]);
+  // Country feeds keep stories that mention other countries (Indian companies abroad, trade deals).
+  await poller.ingest(ind, [item('e', "Tata Motors acquires majority stake in Italy's Iveco"), item('h', 'India-US trade deal lifts IT stocks')]);
   assert.equal(poller.books.get('ind2').size, 2);
 });

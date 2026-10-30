@@ -1,7 +1,6 @@
 import { EventEmitter } from 'node:events';
 import { StoryBook } from './storybook.js';
 import { makeTierResolver, makeGroupResolver, fingerprint, placesConflict, DEVANAGARI } from './verify.js';
-import { countryByCode } from './config.js';
 import { allPlaceAliases } from './query.js';
 import { embed } from './semantic.js';
 import { hostOf, rootDomain } from './util.js';
@@ -31,11 +30,10 @@ export class Poller extends EventEmitter {
     this.#embedRestored(book);
     const active = this.adapters.filter((a) => a.enabled(feed));
     const maxInterval = Math.max(60, ...active.map((a) => this.config.intervals[a.id]));
-    // Region guard: what the feed covers, as a place fingerprint (the place, else the country).
-    const country = countryByCode.get(feed.country);
-    const region = feed.place || (feed.country !== 'WORLD' ? country?.name : '');
+    // Region guard for state/city feeds (country feeds keep foreign-related stories such as
+    // "Tata Motors buys Italy's Iveco"; their queries are anchored to the country instead).
     const st = {
-      region: region ? fingerprint(region) : null,
+      region: feed.place ? fingerprint(feed.place) : null,
       regionDrops: [], // recent headlines dropped by the region guard (diagnostics)
       timers: [],
       // A brand-new feed backfills the last hour; don't fire notifications for that backlog.
