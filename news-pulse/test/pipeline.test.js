@@ -17,7 +17,7 @@ function setup() {
 
 test('google news + gdelt cluster into corroborated stories', async () => {
   const { poller, feed } = setup();
-  await poller.ingest(feed, gnews.parse(fixture('gnews.xml')));
+  await poller.ingest(feed, gnews.parse(fixture('gnews.xml'), 'en'));
   await poller.ingest(feed, gdelt.parse(fixture('gdelt.json')));
   const stories = poller.books.get(feed.id).list();
   const rbi = stories.find((s) => /repo rate/i.test(s.title));
@@ -29,7 +29,7 @@ test('google news + gdelt cluster into corroborated stories', async () => {
   assert.equal(sensex.status, 'developing');
   assert.equal(sensex.outlets, 3);
   assert.equal(sensex.origins, 2);
-  assert.ok(sensex.reasons.includes('1 syndicated copy merged'));
+  assert.deepEqual(sensex.reasons.find((r) => r.code === 'syndicated'), { code: 'syndicated', n: 1 });
   const ipo = stories.find((s) => /IPO/.test(s.title));
   assert.equal(ipo.status, 'unconfirmed');
   assert.equal(stories.length, 3);
@@ -37,7 +37,7 @@ test('google news + gdelt cluster into corroborated stories', async () => {
 
 test('no notifications during warm-up backfill, then one per transition', async () => {
   const { poller, feed, sent } = setup();
-  await poller.ingest(feed, gnews.parse(fixture('gnews.xml')));
+  await poller.ingest(feed, gnews.parse(fixture('gnews.xml'), 'en'));
   assert.equal(sent.length, 0);
 
   poller.state.get(feed.id).warmUntil = 0;
@@ -64,4 +64,41 @@ test('stale stories are not pushed', async () => {
   ]);
   assert.equal(poller.books.get(feed.id).list()[0].status, 'verified');
   assert.equal(sent.length, 0);
+});
+
+test('real Rajasthan politics headlines in Hindi and English cluster into bilingual stories', async () => {
+  const sent = [];
+  const poller = new Poller({ config, adapters: [], notifier: { notify: async () => sent.push(1) }, books: new Map() });
+  const feed = { id: 'raj', country: 'IN', place: 'Rajasthan', domain: 'politics', keywords: [] };
+  poller.add(feed);
+  await poller.ingest(feed, gnews.parse(fixture('gnews-rajasthan-en.xml'), 'en'));
+  await poller.ingest(feed, gnews.parse(fixture('gnews-rajasthan-hi.xml'), 'hi'));
+  const stories = poller.books.get(feed.id).list();
+  const find = (re) => stories.find((s) => s.articles.some((a) => re.test(a.title)));
+
+  // Two English outlets on Gehlot's CBI/ED probe demand.
+  const probe = find(/Gehlot seeks CBI/);
+  assert.ok(probe.articles.some((a) => /large property deals/.test(a.title)));
+  assert.equal(probe.status, 'developing');
+
+  // "SIR not new under Congress" — ThePrint + Hans India, worded differently.
+  const sir = find(/SIR conducted/);
+  assert.ok(sir.articles.some((a) => /SIR is not new/.test(a.title)));
+  assert.equal(sir.origins, 2);
+
+  // Mixed Hindi/English headline (Jansatta) joins the English report: two major groups → verified.
+  const turnout = find(/78\.77% turnout/);
+  assert.deepEqual(turnout.langs, ['en', 'hi']);
+  assert.equal(turnout.status, 'verified');
+  assert.ok(turnout.titles.hi && turnout.titles.en);
+
+  // Dainik Bhaskar's templated district result pages are one outlet, not corroboration.
+  const sarpanch = find(/जोधपुर: सरपंच/);
+  assert.ok(sarpanch.articles.some((a) => /जयपुर:सरपंच/.test(a.title)));
+  assert.equal(sarpanch.origins, 1);
+
+  // Unrelated stories stay separate even though they all mention Rajasthan.
+  assert.notEqual(find(/Guv calls/).id, find(/PM-KISAN/).id);
+  assert.notEqual(find(/Speaker Launches/).id, probe.id);
+  assert.ok(stories.length >= 10, `expected separate stories, got ${stories.length}`);
 });

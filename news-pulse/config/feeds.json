@@ -1,40 +1,8 @@
 [
-  {
-    "id": "in-markets",
-    "name": "India · Markets",
-    "country": "IN",
-    "place": "",
-    "domain": "markets",
-    "keywords": [],
-    "rss": []
-  },
-  {
-    "id": "us-tech",
-    "name": "United States · Technology",
-    "country": "US",
-    "place": "",
-    "domain": "tech",
-    "keywords": [],
-    "rss": []
-  },
-  {
-    "id": "gb-politics",
-    "name": "United Kingdom · Politics",
-    "country": "GB",
-    "place": "",
-    "domain": "politics",
-    "keywords": [],
-    "rss": []
-  },
-  {
-    "id": "world-disaster",
-    "name": "Worldwide · Disasters",
-    "country": "WORLD",
-    "place": "",
-    "domain": "disaster",
-    "keywords": [],
-    "rss": [
-      { "url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_hour.atom", "tier": "official", "name": "USGS" }
-    ]
-  }
+  { "id": "in-rajasthan-politics", "country": "IN", "place": "Rajasthan", "domain": "politics", "langs": ["en", "hi"], "keywords": [], "rss": [] },
+  { "id": "in-markets", "country": "IN", "place": "", "domain": "markets", "langs": ["en", "hi"], "keywords": [], "rss": [] },
+  { "id": "in-disaster", "country": "IN", "place": "", "domain": "disaster", "langs": ["en", "hi"], "keywords": [], "rss": [] },
+  { "id": "us-tech", "country": "US", "place": "", "domain": "tech", "langs": ["en"], "keywords": [], "rss": [] },
+  { "id": "world-disaster", "country": "WORLD", "place": "", "domain": "disaster", "langs": ["en"], "keywords": [],
+    "rss": [{ "url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_hour.atom", "tier": "official", "name": "USGS" }] }
 ]

@@ -8,7 +8,8 @@ import { StoryBook } from './storybook.js';
 import { Poller } from './poller.js';
 import { Notifier } from './notifier.js';
 import { adapters } from './sources/index.js';
-import { feedKeywords } from './query.js';
+import { feedKeywords, feedLabel, feedLangs, resolvePlace } from './query.js';
+import { reasonText } from './verify.js';
 import { hash, slug } from './util.js';
 
 const store = new Store(config.dataDir);
@@ -116,10 +117,13 @@ async function readJson(req, limit = 16 * 1024) {
   }
 }
 
+const feedFingerprint = (f) =>
+  JSON.stringify([f.country, f.domain, (f.place || '').toLowerCase(), (f.keywords || []).map((k) => k.toLowerCase()).sort(), feedLangs(f).map((e) => e.lang).sort()]);
+
 const createLimiter = new Map(); // ip -> timestamps
 function allowCreate(ip) {
   const list = (createLimiter.get(ip) || []).filter((t) => now() - t < 3600 * 1000);
-  if (list.length >= 10) return false;
+  if (list.length >= 30) return false;
   list.push(now());
   createLimiter.set(ip, list);
   return true;
@@ -128,10 +132,20 @@ function allowCreate(ip) {
 const escapeHtml = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
-const publicFeed = (f) => ({
-  id: f.id, name: f.name, country: f.country, place: f.place || '', domain: f.domain,
-  keywords: f.keywords || [], effectiveKeywords: feedKeywords(f), custom: !builtinIds.has(f.id),
-});
+function publicFeed(f) {
+  const langs = feedLangs(f).map((e) => e.lang);
+  return {
+    id: f.id,
+    label: { en: feedLabel(f, 'en'), hi: feedLabel(f, 'hi') },
+    country: f.country,
+    place: f.place || '',
+    domain: f.domain,
+    langs,
+    keywords: f.keywords || [],
+    effectiveKeywords: Object.fromEntries(langs.map((l) => [l, feedKeywords(f, l)])),
+    custom: !builtinIds.has(f.id),
+  };
+}
 
 function touch(feed) {
   if (customFeeds.has(feed.id)) feed.lastAccess = now();
@@ -141,9 +155,9 @@ function touch(feed) {
 function renderIndex(url) {
   const feed = getFeed(url.searchParams.get('feed') || '');
   const story = feed && books.get(feed.id)?.get(url.searchParams.get('story') || '');
-  const title = story ? story.title : feed ? `${feed.name} — NewsPulse` : 'NewsPulse — verified news as it happens';
+  const title = story ? story.title : feed ? `${feedLabel(feed, 'en')} — NewsPulse` : 'NewsPulse — verified news as it happens';
   const desc = story
-    ? `${story.status === 'verified' ? 'Verified' : story.status === 'developing' ? 'Developing' : 'Unconfirmed'} · ${story.reasons.join(' · ')}`
+    ? `${story.status === 'verified' ? 'Verified' : story.status === 'developing' ? 'Developing' : 'Unconfirmed'} · ${story.reasons.map(reasonText).join(' · ')}`
     : 'Real-time news for any place and topic, cross-checked across independent sources.';
   return indexTemplate
     .replaceAll('{{OG_TITLE}}', escapeHtml(title))
@@ -181,8 +195,9 @@ async function api(req, res, url) {
 
   if (parts[1] === 'meta' && method === 'GET') {
     return send(res, 200, {
-      countries: config.countries.map(({ code, name }) => ({ code, name })),
-      domains: Object.entries(config.domains).map(([id, d]) => ({ id, label: d.label, keywords: d.keywords })),
+      countries: config.countries.map((c) => ({ code: c.code, name: c.name, nameHi: c.nameHi, langs: c.editions.map((e) => e.lang) })),
+      domains: Object.entries(config.domains).map(([id, d]) => ({ id, label: d.label, labelHi: d.labelHi, icon: d.icon, keywords: d.keywords })),
+      places: Object.fromEntries(Object.entries(config.places).map(([cc, list]) => [cc, list.map((p) => ({ en: p.en[0], hi: p.hi[0], type: p.type, state: p.state }))])),
       vapidPublicKey: config.vapid.publicKey,
       intervals: config.intervals,
       sources: adapters.filter((a) => a.id !== 'rss').map((a) => ({ id: a.id, enabled: a.enabled({}) })),
@@ -197,26 +212,28 @@ async function api(req, res, url) {
       const b = await readJson(req);
       const country = countryByCode.has(b.country) ? b.country : null;
       const domain = config.domains[b.domain] ? b.domain : null;
-      const place = String(b.place || '').trim().slice(0, 60);
+      if (!country || !domain) return send(res, 400, { error: 'country and domain are required' });
+      const rawPlace = String(b.place || '').trim().slice(0, 60);
+      // Canonical English name for known places, so "राजस्थान" and "rajasthan" share one feed.
+      const place = resolvePlace(country, rawPlace)?.en[0] || rawPlace;
       const keywords = (Array.isArray(b.keywords) ? b.keywords : String(b.keywords || '').split(','))
         .map((k) => String(k).trim().slice(0, 40))
         .filter(Boolean)
         .slice(0, 12);
-      if (!country || !domain) return send(res, 400, { error: 'country and domain are required' });
       if (domain === 'custom' && !keywords.length && !place) return send(res, 400, { error: 'Add keywords or a place' });
-      const fingerprint = JSON.stringify([country, domain, place.toLowerCase(), keywords.map((k) => k.toLowerCase()).sort()]);
-      const id = `${slug(`${country}-${place || ''}-${domain}`).replace(/-+/g, '-')}-${hash(fingerprint).slice(0, 6)}`;
-      const existing = getFeed(id);
+      const available = countryByCode.get(country).editions.map((e) => e.lang);
+      const langs = (Array.isArray(b.langs) ? b.langs : []).filter((l) => available.includes(l));
+      const finalLangs = (langs.length ? langs : available).sort();
+      const fingerprint = JSON.stringify([country, domain, place.toLowerCase(), keywords.map((k) => k.toLowerCase()).sort(), finalLangs]);
+      const id = `${slug(`${country}-${place}-${domain}`).replace(/-+/g, '-')}-${hash(fingerprint).slice(0, 6)}`;
+      const existing = allFeeds().find((f) => f.id === id || feedFingerprint(f) === fingerprint);
       if (existing) {
         touch(existing);
         return send(res, 200, publicFeed(existing));
       }
       if (customFeeds.size >= config.maxCustomFeeds) return send(res, 429, { error: 'Feed limit reached on this server' });
       if (!allowCreate(ip)) return send(res, 429, { error: 'Too many new feeds, try again later' });
-      const countryName = countryByCode.get(country).name;
-      const label = domain === 'custom' ? keywords.slice(0, 3).join(', ') : config.domains[domain].label;
-      const name = String(b.name || '').trim().slice(0, 60) || `${place ? `${place}, ` : ''}${countryName} · ${label}`;
-      const feed = { id, name, country, place, domain, keywords, rss: [], createdAt: now(), lastAccess: now() };
+      const feed = { id, country, place, domain, keywords, langs: finalLangs, rss: [], createdAt: now(), lastAccess: now() };
       customFeeds.set(id, feed);
       poller.add(feed);
       markDirty();
@@ -232,7 +249,8 @@ async function api(req, res, url) {
     if (parts[3] === 'stories' && method === 'GET') {
       const limit = Math.min(Number(url.searchParams.get('limit')) || 100, 300);
       const stories = books.get(feed.id)?.list({ status: url.searchParams.get('status') || '', limit }) || [];
-      return send(res, 200, { feed: publicFeed(feed), sources: poller.status(feed.id), stories: stories.map(StoryBook.toJSON) },
+      const book = books.get(feed.id);
+      return send(res, 200, { feed: publicFeed(feed), sources: poller.status(feed.id), counts: book?.counts() || {}, stories: stories.map(StoryBook.toJSON) },
         { 'cache-control': 'no-cache' });
     }
   }
@@ -267,10 +285,11 @@ async function api(req, res, url) {
       if (!sub.keys?.p256dh || !sub.keys?.auth) return send(res, 400, { error: 'Invalid subscription' });
       const feeds = (Array.isArray(b.feeds) ? b.feeds : []).filter((id) => getFeed(id)).slice(0, 20);
       const level = b.level === 'developing' ? 'developing' : 'verified';
+      const ui = b.ui === 'hi' ? 'hi' : 'en';
       if (!feeds.length) {
         subscriptions.delete(sub.endpoint);
       } else {
-        subscriptions.set(sub.endpoint, { subscription: { endpoint: sub.endpoint, keys: sub.keys }, feeds, level, updatedAt: now() });
+        subscriptions.set(sub.endpoint, { subscription: { endpoint: sub.endpoint, keys: sub.keys }, feeds, level, ui, updatedAt: now() });
       }
       markDirty();
       return send(res, 200, { ok: true, feeds, level });

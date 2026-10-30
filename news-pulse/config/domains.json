@@ -1,10 +1,192 @@
 {
-  "markets":  { "label": "Business & Markets", "keywords": ["stock market", "shares", "IPO", "central bank", "interest rate", "inflation", "earnings", "rupee", "Sensex", "Nifty"] },
-  "politics": { "label": "Politics & Policy", "keywords": ["election", "parliament", "minister", "government", "policy", "bill", "cabinet"] },
-  "tech":     { "label": "Technology", "keywords": ["technology", "startup", "artificial intelligence", "cybersecurity", "semiconductor", "data breach", "funding round"] },
-  "health":   { "label": "Health", "keywords": ["outbreak", "hospital", "vaccine", "health ministry", "virus", "epidemic"] },
-  "disaster": { "label": "Disasters & Weather", "keywords": ["earthquake", "flood", "cyclone", "wildfire", "landslide", "evacuation", "tsunami", "heatwave"] },
-  "security": { "label": "Security & Crime", "keywords": ["attack", "explosion", "terror", "shooting", "police", "arrested", "blast"] },
-  "sports":   { "label": "Sports", "keywords": ["cricket", "football", "match", "tournament", "Olympics", "championship"] },
-  "custom":   { "label": "Custom keywords only", "keywords": [] }
+  "politics": {
+    "label": "Politics",
+    "labelHi": "राजनीति",
+    "icon": "🏛️",
+    "keywords": {
+      "en": [
+        "election",
+        "minister",
+        "chief minister",
+        "MLA",
+        "assembly",
+        "parliament",
+        "cabinet",
+        "government",
+        "opposition",
+        "governor",
+        "bypoll",
+        "panchayat"
+      ],
+      "hi": [
+        "चुनाव",
+        "मंत्री",
+        "मुख्यमंत्री",
+        "विधायक",
+        "विधानसभा",
+        "सांसद",
+        "सरकार",
+        "विपक्ष",
+        "राज्यपाल",
+        "उपचुनाव",
+        "पंचायत"
+      ]
+    }
+  },
+  "markets": {
+    "label": "Business & Markets",
+    "labelHi": "कारोबार और बाज़ार",
+    "icon": "📈",
+    "keywords": {
+      "en": [
+        "stock market",
+        "shares",
+        "IPO",
+        "central bank",
+        "interest rate",
+        "inflation",
+        "earnings"
+      ],
+      "hi": [
+        "शेयर बाजार",
+        "शेयर",
+        "आईपीओ",
+        "ब्याज दर",
+        "महंगाई",
+        "कारोबार"
+      ]
+    }
+  },
+  "tech": {
+    "label": "Technology",
+    "labelHi": "तकनीक",
+    "icon": "💻",
+    "keywords": {
+      "en": [
+        "technology",
+        "startup",
+        "artificial intelligence",
+        "cybersecurity",
+        "semiconductor",
+        "data breach",
+        "funding round"
+      ],
+      "hi": [
+        "तकनीक",
+        "टेक्नोलॉजी",
+        "स्टार्टअप",
+        "आर्टिफिशियल इंटेलिजेंस",
+        "साइबर",
+        "डेटा लीक"
+      ]
+    }
+  },
+  "health": {
+    "label": "Health",
+    "labelHi": "स्वास्थ्य",
+    "icon": "🏥",
+    "keywords": {
+      "en": [
+        "outbreak",
+        "hospital",
+        "vaccine",
+        "health ministry",
+        "virus",
+        "epidemic"
+      ],
+      "hi": [
+        "अस्पताल",
+        "स्वास्थ्य",
+        "वैक्सीन",
+        "वायरस",
+        "बीमारी",
+        "महामारी"
+      ]
+    }
+  },
+  "disaster": {
+    "label": "Disasters & Weather",
+    "labelHi": "आपदा और मौसम",
+    "icon": "🌪️",
+    "keywords": {
+      "en": [
+        "earthquake",
+        "flood",
+        "cyclone",
+        "wildfire",
+        "landslide",
+        "evacuation",
+        "heatwave",
+        "heavy rain"
+      ],
+      "hi": [
+        "भूकंप",
+        "बाढ़",
+        "चक्रवात",
+        "भूस्खलन",
+        "भारी बारिश",
+        "लू",
+        "आंधी",
+        "अलर्ट"
+      ]
+    }
+  },
+  "security": {
+    "label": "Security & Crime",
+    "labelHi": "सुरक्षा और अपराध",
+    "icon": "🚨",
+    "keywords": {
+      "en": [
+        "attack",
+        "explosion",
+        "terror",
+        "shooting",
+        "police",
+        "arrested",
+        "blast",
+        "murder"
+      ],
+      "hi": [
+        "हमला",
+        "विस्फोट",
+        "आतंकी",
+        "फायरिंग",
+        "पुलिस",
+        "गिरफ्तार",
+        "हत्या"
+      ]
+    }
+  },
+  "sports": {
+    "label": "Sports",
+    "labelHi": "खेल",
+    "icon": "🏏",
+    "keywords": {
+      "en": [
+        "cricket",
+        "football",
+        "match",
+        "tournament",
+        "Olympics",
+        "championship"
+      ],
+      "hi": [
+        "क्रिकेट",
+        "फुटबॉल",
+        "मैच",
+        "टूर्नामेंट",
+        "ओलंपिक",
+        "खिलाड़ी"
+      ]
+    }
+  },
+  "custom": {
+    "label": "My keywords",
+    "labelHi": "मेरे कीवर्ड",
+    "icon": "🔎",
+    "keywords": {
+      "en": [],
+      "hi": []
+    }
+  }
 }

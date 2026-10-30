@@ -45,5 +45,9 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - name: Probe upstream sources
-        run: node scripts/probe.mjs
+      - uses: actions/cache@v4
+        with:
+          path: news-pulse/.live/models
+          key: semantic-model-paraphrase-multilingual-MiniLM-L12-v2
+      - name: Live sources → clustering → verification
+        run: DATA_DIR=.live node scripts/live-check.mjs

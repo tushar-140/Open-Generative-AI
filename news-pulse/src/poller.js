@@ -1,6 +1,8 @@
 import { EventEmitter } from 'node:events';
 import { StoryBook } from './storybook.js';
-import { makeTierResolver } from './verify.js';
+import { makeTierResolver, makeGroupResolver, DEVANAGARI } from './verify.js';
+import { allPlaceAliases } from './query.js';
+import { embed } from './semantic.js';
 import { hostOf, rootDomain } from './util.js';
 
 // Schedules every source adapter for every feed, clusters results and triggers notifications.
@@ -14,6 +16,7 @@ export class Poller extends EventEmitter {
     this.feeds = new Map();
     this.state = new Map(); // feedId -> { timers, warmUntil, sources: {} }
     this.resolveTier = makeTierResolver(config.sources);
+    this.resolveGroup = makeGroupResolver(config.groups);
     this.stagger = 0;
   }
 
@@ -21,6 +24,10 @@ export class Poller extends EventEmitter {
     if (this.feeds.has(feed.id)) return;
     this.feeds.set(feed.id, feed);
     if (!this.books.has(feed.id)) this.books.set(feed.id, new StoryBook(feed.id, this.config.rules));
+    const book = this.books.get(feed.id);
+    book.setIgnore(allPlaceAliases(feed));
+    book.semantic = this.config.semantic;
+    this.#embedRestored(book);
     const active = this.adapters.filter((a) => a.enabled(feed));
     const maxInterval = Math.max(60, ...active.map((a) => this.config.intervals[a.id]));
     const st = {
@@ -39,6 +46,12 @@ export class Poller extends EventEmitter {
         st.timers.push(setInterval(() => this.run(feed, adapter), every + Math.random() * 5000));
       }, delay));
     }
+  }
+
+  async #embedRestored(book) {
+    const fps = book.missingVectors();
+    const vecs = await embed(fps.map((fp) => fp.title)).catch(() => null);
+    vecs?.forEach((v, i) => (fps[i].vec = v));
   }
 
   remove(feedId) {
@@ -61,10 +74,13 @@ export class Poller extends EventEmitter {
     if (tier === 'blocked' || !host) return null;
     const maxAge = this.config.ingestMaxAgeHours * 3600 * 1000;
     if (item.publishedAt < now - maxAge) return null;
+    const root = rootDomain(host);
     return {
       ...item,
       host,
-      rootDomain: rootDomain(host),
+      rootDomain: root,
+      group: this.resolveGroup(host, root),
+      lang: DEVANAGARI.test(item.title) ? 'hi' : item.lang || 'en',
       tier,
       source: item.source || host,
       publishedAt: Math.min(item.publishedAt, now),
@@ -94,7 +110,12 @@ export class Poller extends EventEmitter {
     const book = this.books.get(feed.id);
     const st = this.state.get(feed.id);
     if (!book || !st) return;
-    const enriched = items.map((i) => this.enrich(i, now)).filter(Boolean);
+    const enriched = items.map((i) => this.enrich(i, now)).filter((a) => a && !book.seen.has(a.id));
+    const vecs = await embed(enriched.map((a) => a.title)).catch((e) => {
+      console.warn(`[semantic] ${e.message}`);
+      return null;
+    });
+    vecs?.forEach((v, i) => (enriched[i]._vec = v));
     const { changed, transitions } = book.ingest(enriched, now);
     if (!changed.length) return;
     this.emit('stories', feed.id, changed);

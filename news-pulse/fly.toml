@@ -26,3 +26,8 @@ primary_region = "bom"
   method = "GET"
   path = "/api/health"
   timeout = "5s"
+
+# The multilingual matching model needs ~350 MB; set SEMANTIC_MATCH=0 to run in 256 MB.
+[[vm]]
+  memory = "1gb"
+  cpus = 1

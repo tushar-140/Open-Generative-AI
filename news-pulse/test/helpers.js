@@ -11,5 +11,6 @@ export function fixture(name, now = Date.now()) {
     .readFileSync(path.join(dir, name), 'utf8')
     .replaceAll('{{T1}}', new Date(now - 10 * 60000).toUTCString())
     .replaceAll('{{T2}}', new Date(now - 5 * 60000).toUTCString())
-    .replaceAll('{{SEEN}}', seen(now - 3 * 60000));
+    .replaceAll('{{SEEN}}', seen(now - 3 * 60000))
+    .replace(/\{\{AGO(\d+)\}\}/g, (_, m) => new Date(now - Number(m) * 60000).toUTCString());
 }

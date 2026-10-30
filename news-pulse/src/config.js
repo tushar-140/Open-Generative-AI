@@ -24,11 +24,13 @@ export const config = {
     rss: int(env.RSS_INTERVAL_SEC, 120),
     x: int(env.X_INTERVAL_SEC, 300),
   },
+  // GDELT allows one request every 5 seconds per client.
+  gdeltMinGapMs: int(env.GDELT_MIN_GAP_MS, 6000),
   ingestMaxAgeHours: int(env.INGEST_MAX_AGE_HOURS, 12),
   retentionHours: int(env.RETENTION_HOURS, 48),
   notifyMaxAgeMin: int(env.NOTIFY_MAX_AGE_MIN, 180),
   notifyBurstLimit: int(env.NOTIFY_BURST_LIMIT, 6),
-  maxCustomFeeds: int(env.MAX_CUSTOM_FEEDS, 50),
+  maxCustomFeeds: int(env.MAX_CUSTOM_FEEDS, 100),
   customFeedIdleDays: int(env.CUSTOM_FEED_IDLE_DAYS, 7),
   rules: {
     verifiedScore: Number(env.VERIFIED_SCORE || 4),
@@ -38,6 +40,13 @@ export const config = {
     gnews: env.GNEWS_BASE_URL || 'https://news.google.com',
     gdelt: env.GDELT_BASE_URL || 'https://api.gdeltproject.org',
     x: env.X_BASE_URL || 'https://api.x.com',
+  },
+  semantic: {
+    enabled: env.SEMANTIC_MATCH !== '0',
+    model: env.SEMANTIC_MODEL || 'Xenova/paraphrase-multilingual-MiniLM-L12-v2',
+    // Cosine similarity needed to merge two headlines; calibrated on real Hindi/English pairs.
+    sameLang: Number(env.SEMANTIC_SAME_LANG || 0.75),
+    crossLang: Number(env.SEMANTIC_CROSS_LANG || 0.7),
   },
   xBearerToken: env.X_BEARER_TOKEN || '',
   channels: {
@@ -49,8 +58,10 @@ export const config = {
   },
   feeds: readJson('config/feeds.json'),
   sources: readJson('config/sources.json'),
+  groups: readJson('config/groups.json'),
   domains: readJson('config/domains.json'),
   countries: readJson('config/countries.json'),
+  places: readJson('config/places.json'),
 };
 
 export const countryByCode = new Map(config.countries.map((c) => [c.code, c]));

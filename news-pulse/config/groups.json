@@ -1,0 +1,97 @@
+{
+  "_comment": "Publishers owned by the same group count as ONE independent source. Keys are group names, values are root domains or hostnames.",
+  "Bhaskar": [
+    "bhaskar.com",
+    "bhaskarenglish.in",
+    "divyabhaskar.co.in",
+    "dailybhaskar.com"
+  ],
+  "Times Group": [
+    "indiatimes.com",
+    "timesofindia.com",
+    "timesnownews.com",
+    "mirchi.in"
+  ],
+  "HT Media": [
+    "hindustantimes.com",
+    "livehindustan.com",
+    "livemint.com"
+  ],
+  "India Today Group": [
+    "indiatoday.in",
+    "aajtak.in",
+    "businesstoday.in",
+    "thelallantop.com"
+  ],
+  "Express Group": [
+    "indianexpress.com",
+    "jansatta.com",
+    "financialexpress.com",
+    "loksatta.com",
+    "newindianexpress.com"
+  ],
+  "Network18": [
+    "news18.com",
+    "moneycontrol.com",
+    "firstpost.com",
+    "cnbctv18.com"
+  ],
+  "Zee": [
+    "india.com",
+    "zeebiz.com",
+    "dnaindia.com",
+    "wionews.com"
+  ],
+  "ABP": [
+    "abplive.com",
+    "telegraphindia.com",
+    "anandabazar.com"
+  ],
+  "NDTV": [
+    "ndtv.com",
+    "ndtv.in",
+    "ndtvprofit.com"
+  ],
+  "Jagran": [
+    "jagran.com",
+    "naidunia.com",
+    "jagranjosh.com",
+    "inextlive.com"
+  ],
+  "Amar Ujala": [
+    "amarujala.com"
+  ],
+  "Patrika": [
+    "patrika.com"
+  ],
+  "TV9": [
+    "tv9hindi.com",
+    "tv9marathi.com",
+    "tv9telugu.com"
+  ],
+  "The Hindu Group": [
+    "thehindu.com",
+    "thehindubusinessline.com",
+    "frontline.thehindu.com"
+  ],
+  "BBC": [
+    "bbc.com",
+    "bbc.co.uk"
+  ],
+  "Bloomberg": [
+    "bloomberg.com",
+    "bloombergquint.com"
+  ],
+  "Guardian": [
+    "theguardian.com"
+  ],
+  "News Corp": [
+    "wsj.com",
+    "nypost.com",
+    "thetimes.co.uk",
+    "news.com.au",
+    "dowjones.com",
+    "marketwatch.com",
+    "barrons.com"
+  ]
+}

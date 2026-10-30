@@ -1,0 +1,855 @@
+{
+ "IN": [
+  {
+   "en": [
+    "Andhra Pradesh"
+   ],
+   "hi": [
+    "आंध्र प्रदेश"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Arunachal Pradesh"
+   ],
+   "hi": [
+    "अरुणाचल प्रदेश"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Assam"
+   ],
+   "hi": [
+    "असम"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Bihar"
+   ],
+   "hi": [
+    "बिहार"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Chhattisgarh"
+   ],
+   "hi": [
+    "छत्तीसगढ़"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Goa"
+   ],
+   "hi": [
+    "गोवा"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Gujarat"
+   ],
+   "hi": [
+    "गुजरात"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Haryana"
+   ],
+   "hi": [
+    "हरियाणा"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Himachal Pradesh"
+   ],
+   "hi": [
+    "हिमाचल प्रदेश"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Jharkhand"
+   ],
+   "hi": [
+    "झारखंड"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Karnataka"
+   ],
+   "hi": [
+    "कर्नाटक"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Kerala"
+   ],
+   "hi": [
+    "केरल"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Madhya Pradesh"
+   ],
+   "hi": [
+    "मध्य प्रदेश"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Maharashtra"
+   ],
+   "hi": [
+    "महाराष्ट्र"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Manipur"
+   ],
+   "hi": [
+    "मणिपुर"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Meghalaya"
+   ],
+   "hi": [
+    "मेघालय"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Mizoram"
+   ],
+   "hi": [
+    "मिजोरम"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Nagaland"
+   ],
+   "hi": [
+    "नगालैंड",
+    "नागालैंड"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Odisha",
+    "Orissa"
+   ],
+   "hi": [
+    "ओडिशा"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Punjab"
+   ],
+   "hi": [
+    "पंजाब"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Rajasthan"
+   ],
+   "hi": [
+    "राजस्थान"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Sikkim"
+   ],
+   "hi": [
+    "सिक्किम"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Tamil Nadu"
+   ],
+   "hi": [
+    "तमिलनाडु"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Telangana"
+   ],
+   "hi": [
+    "तेलंगाना"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Tripura"
+   ],
+   "hi": [
+    "त्रिपुरा"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Uttar Pradesh"
+   ],
+   "hi": [
+    "उत्तर प्रदेश"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Uttarakhand"
+   ],
+   "hi": [
+    "उत्तराखंड"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "West Bengal"
+   ],
+   "hi": [
+    "पश्चिम बंगाल"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Delhi"
+   ],
+   "hi": [
+    "दिल्ली"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Jammu and Kashmir"
+   ],
+   "hi": [
+    "जम्मू-कश्मीर",
+    "जम्मू कश्मीर"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Ladakh"
+   ],
+   "hi": [
+    "लद्दाख"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Puducherry"
+   ],
+   "hi": [
+    "पुडुचेरी"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Chandigarh"
+   ],
+   "hi": [
+    "चंडीगढ़"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Andaman and Nicobar Islands"
+   ],
+   "hi": [
+    "अंडमान निकोबार"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Lakshadweep"
+   ],
+   "hi": [
+    "लक्षद्वीप"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Dadra and Nagar Haveli and Daman and Diu"
+   ],
+   "hi": [
+    "दादरा नगर हवेली और दमन दीव"
+   ],
+   "type": "state"
+  },
+  {
+   "en": [
+    "Jaipur"
+   ],
+   "hi": [
+    "जयपुर"
+   ],
+   "type": "city",
+   "state": "Rajasthan"
+  },
+  {
+   "en": [
+    "Jodhpur"
+   ],
+   "hi": [
+    "जोधपुर"
+   ],
+   "type": "city",
+   "state": "Rajasthan"
+  },
+  {
+   "en": [
+    "Udaipur"
+   ],
+   "hi": [
+    "उदयपुर"
+   ],
+   "type": "city",
+   "state": "Rajasthan"
+  },
+  {
+   "en": [
+    "Kota"
+   ],
+   "hi": [
+    "कोटा"
+   ],
+   "type": "city",
+   "state": "Rajasthan"
+  },
+  {
+   "en": [
+    "Bikaner"
+   ],
+   "hi": [
+    "बीकानेर"
+   ],
+   "type": "city",
+   "state": "Rajasthan"
+  },
+  {
+   "en": [
+    "Ajmer"
+   ],
+   "hi": [
+    "अजमेर"
+   ],
+   "type": "city",
+   "state": "Rajasthan"
+  },
+  {
+   "en": [
+    "Alwar"
+   ],
+   "hi": [
+    "अलवर"
+   ],
+   "type": "city",
+   "state": "Rajasthan"
+  },
+  {
+   "en": [
+    "Bhilwara"
+   ],
+   "hi": [
+    "भीलवाड़ा"
+   ],
+   "type": "city",
+   "state": "Rajasthan"
+  },
+  {
+   "en": [
+    "Sikar"
+   ],
+   "hi": [
+    "सीकर"
+   ],
+   "type": "city",
+   "state": "Rajasthan"
+  },
+  {
+   "en": [
+    "Bharatpur"
+   ],
+   "hi": [
+    "भरतपुर"
+   ],
+   "type": "city",
+   "state": "Rajasthan"
+  },
+  {
+   "en": [
+    "Mumbai"
+   ],
+   "hi": [
+    "मुंबई"
+   ],
+   "type": "city",
+   "state": "Maharashtra"
+  },
+  {
+   "en": [
+    "Pune"
+   ],
+   "hi": [
+    "पुणे"
+   ],
+   "type": "city",
+   "state": "Maharashtra"
+  },
+  {
+   "en": [
+    "Nagpur"
+   ],
+   "hi": [
+    "नागपुर"
+   ],
+   "type": "city",
+   "state": "Maharashtra"
+  },
+  {
+   "en": [
+    "Lucknow"
+   ],
+   "hi": [
+    "लखनऊ"
+   ],
+   "type": "city",
+   "state": "Uttar Pradesh"
+  },
+  {
+   "en": [
+    "Kanpur"
+   ],
+   "hi": [
+    "कानपुर"
+   ],
+   "type": "city",
+   "state": "Uttar Pradesh"
+  },
+  {
+   "en": [
+    "Varanasi"
+   ],
+   "hi": [
+    "वाराणसी"
+   ],
+   "type": "city",
+   "state": "Uttar Pradesh"
+  },
+  {
+   "en": [
+    "Prayagraj",
+    "Allahabad"
+   ],
+   "hi": [
+    "प्रयागराज"
+   ],
+   "type": "city",
+   "state": "Uttar Pradesh"
+  },
+  {
+   "en": [
+    "Agra"
+   ],
+   "hi": [
+    "आगरा"
+   ],
+   "type": "city",
+   "state": "Uttar Pradesh"
+  },
+  {
+   "en": [
+    "Noida"
+   ],
+   "hi": [
+    "नोएडा"
+   ],
+   "type": "city",
+   "state": "Uttar Pradesh"
+  },
+  {
+   "en": [
+    "Ghaziabad"
+   ],
+   "hi": [
+    "गाजियाबाद",
+    "ग़ाज़ियाबाद"
+   ],
+   "type": "city",
+   "state": "Uttar Pradesh"
+  },
+  {
+   "en": [
+    "Meerut"
+   ],
+   "hi": [
+    "मेरठ"
+   ],
+   "type": "city",
+   "state": "Uttar Pradesh"
+  },
+  {
+   "en": [
+    "Gorakhpur"
+   ],
+   "hi": [
+    "गोरखपुर"
+   ],
+   "type": "city",
+   "state": "Uttar Pradesh"
+  },
+  {
+   "en": [
+    "Patna"
+   ],
+   "hi": [
+    "पटना"
+   ],
+   "type": "city",
+   "state": "Bihar"
+  },
+  {
+   "en": [
+    "Ranchi"
+   ],
+   "hi": [
+    "रांची"
+   ],
+   "type": "city",
+   "state": "Jharkhand"
+  },
+  {
+   "en": [
+    "Jamshedpur"
+   ],
+   "hi": [
+    "जमशेदपुर"
+   ],
+   "type": "city",
+   "state": "Jharkhand"
+  },
+  {
+   "en": [
+    "Bhopal"
+   ],
+   "hi": [
+    "भोपाल"
+   ],
+   "type": "city",
+   "state": "Madhya Pradesh"
+  },
+  {
+   "en": [
+    "Indore"
+   ],
+   "hi": [
+    "इंदौर"
+   ],
+   "type": "city",
+   "state": "Madhya Pradesh"
+  },
+  {
+   "en": [
+    "Gwalior"
+   ],
+   "hi": [
+    "ग्वालियर"
+   ],
+   "type": "city",
+   "state": "Madhya Pradesh"
+  },
+  {
+   "en": [
+    "Jabalpur"
+   ],
+   "hi": [
+    "जबलपुर"
+   ],
+   "type": "city",
+   "state": "Madhya Pradesh"
+  },
+  {
+   "en": [
+    "Raipur"
+   ],
+   "hi": [
+    "रायपुर"
+   ],
+   "type": "city",
+   "state": "Chhattisgarh"
+  },
+  {
+   "en": [
+    "Ahmedabad"
+   ],
+   "hi": [
+    "अहमदाबाद"
+   ],
+   "type": "city",
+   "state": "Gujarat"
+  },
+  {
+   "en": [
+    "Surat"
+   ],
+   "hi": [
+    "सूरत"
+   ],
+   "type": "city",
+   "state": "Gujarat"
+  },
+  {
+   "en": [
+    "Vadodara"
+   ],
+   "hi": [
+    "वडोदरा"
+   ],
+   "type": "city",
+   "state": "Gujarat"
+  },
+  {
+   "en": [
+    "Rajkot"
+   ],
+   "hi": [
+    "राजकोट"
+   ],
+   "type": "city",
+   "state": "Gujarat"
+  },
+  {
+   "en": [
+    "Gurugram",
+    "Gurgaon"
+   ],
+   "hi": [
+    "गुरुग्राम"
+   ],
+   "type": "city",
+   "state": "Haryana"
+  },
+  {
+   "en": [
+    "Faridabad"
+   ],
+   "hi": [
+    "फरीदाबाद"
+   ],
+   "type": "city",
+   "state": "Haryana"
+  },
+  {
+   "en": [
+    "Amritsar"
+   ],
+   "hi": [
+    "अमृतसर"
+   ],
+   "type": "city",
+   "state": "Punjab"
+  },
+  {
+   "en": [
+    "Ludhiana"
+   ],
+   "hi": [
+    "लुधियाना"
+   ],
+   "type": "city",
+   "state": "Punjab"
+  },
+  {
+   "en": [
+    "Shimla"
+   ],
+   "hi": [
+    "शिमला"
+   ],
+   "type": "city",
+   "state": "Himachal Pradesh"
+  },
+  {
+   "en": [
+    "Dehradun"
+   ],
+   "hi": [
+    "देहरादून"
+   ],
+   "type": "city",
+   "state": "Uttarakhand"
+  },
+  {
+   "en": [
+    "Srinagar"
+   ],
+   "hi": [
+    "श्रीनगर"
+   ],
+   "type": "city",
+   "state": "Jammu and Kashmir"
+  },
+  {
+   "en": [
+    "Jammu"
+   ],
+   "hi": [
+    "जम्मू"
+   ],
+   "type": "city",
+   "state": "Jammu and Kashmir"
+  },
+  {
+   "en": [
+    "Kolkata"
+   ],
+   "hi": [
+    "कोलकाता"
+   ],
+   "type": "city",
+   "state": "West Bengal"
+  },
+  {
+   "en": [
+    "Bhubaneswar"
+   ],
+   "hi": [
+    "भुवनेश्वर"
+   ],
+   "type": "city",
+   "state": "Odisha"
+  },
+  {
+   "en": [
+    "Guwahati"
+   ],
+   "hi": [
+    "गुवाहाटी"
+   ],
+   "type": "city",
+   "state": "Assam"
+  },
+  {
+   "en": [
+    "Hyderabad"
+   ],
+   "hi": [
+    "हैदराबाद"
+   ],
+   "type": "city",
+   "state": "Telangana"
+  },
+  {
+   "en": [
+    "Bengaluru",
+    "Bangalore"
+   ],
+   "hi": [
+    "बेंगलुरु"
+   ],
+   "type": "city",
+   "state": "Karnataka"
+  },
+  {
+   "en": [
+    "Chennai"
+   ],
+   "hi": [
+    "चेन्नई"
+   ],
+   "type": "city",
+   "state": "Tamil Nadu"
+  },
+  {
+   "en": [
+    "Kochi"
+   ],
+   "hi": [
+    "कोच्चि"
+   ],
+   "type": "city",
+   "state": "Kerala"
+  },
+  {
+   "en": [
+    "Thiruvananthapuram"
+   ],
+   "hi": [
+    "तिरुवनंतपुरम"
+   ],
+   "type": "city",
+   "state": "Kerala"
+  },
+  {
+   "en": [
+    "Visakhapatnam"
+   ],
+   "hi": [
+    "विशाखापत्तनम"
+   ],
+   "type": "city",
+   "state": "Andhra Pradesh"
+  },
+  {
+   "en": [
+    "New Delhi"
+   ],
+   "hi": [
+    "नई दिल्ली"
+   ],
+   "type": "city",
+   "state": "Delhi"
+  }
+ ]
+}
