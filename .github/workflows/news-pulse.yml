@@ -1,6 +1,7 @@
 name: news-pulse
 
 on:
+  workflow_dispatch:
   push:
     paths: ['news-pulse/**', '.github/workflows/news-pulse.yml']
   pull_request:
@@ -30,3 +31,19 @@ jobs:
           kill $pid
       - name: Docker build
         run: docker build -t news-pulse .
+
+  live-check:
+    # Pulls real, current news to confirm sources, Hindi/English editions and clustering work end to end.
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: news-pulse
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Probe upstream sources
+        run: node scripts/probe.mjs
