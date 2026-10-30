@@ -1,0 +1,40 @@
+[
+  {
+    "id": "in-markets",
+    "name": "India · Markets",
+    "country": "IN",
+    "place": "",
+    "domain": "markets",
+    "keywords": [],
+    "rss": []
+  },
+  {
+    "id": "us-tech",
+    "name": "United States · Technology",
+    "country": "US",
+    "place": "",
+    "domain": "tech",
+    "keywords": [],
+    "rss": []
+  },
+  {
+    "id": "gb-politics",
+    "name": "United Kingdom · Politics",
+    "country": "GB",
+    "place": "",
+    "domain": "politics",
+    "keywords": [],
+    "rss": []
+  },
+  {
+    "id": "world-disaster",
+    "name": "Worldwide · Disasters",
+    "country": "WORLD",
+    "place": "",
+    "domain": "disaster",
+    "keywords": [],
+    "rss": [
+      { "url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_hour.atom", "tier": "official", "name": "USGS" }
+    ]
+  }
+]

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>NewsPulse</title>
+  <meta name="description" content="{{OG_DESC}}">
+  <meta property="og:title" content="{{OG_TITLE}}">
+  <meta property="og:description" content="{{OG_DESC}}">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="{{BASE}}/icons/icon-512.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <img src="/icons/icon.svg" alt="" width="28" height="28">
+      <span>NewsPulse</span>
+      <span id="live" class="live" title="Live connection"><i></i><b>connecting</b></span>
+    </div>
+    <div class="actions">
+      <button id="installBtn" class="ghost" hidden>Install</button>
+      <button id="shareBtn" class="ghost" title="Share this feed">Share</button>
+      <button id="notifyBtn" class="primary" title="Get notified">🔔 Alerts</button>
+    </div>
+  </header>
+
+  <section class="controls">
+    <label class="feedpick">
+      <span>Feed</span>
+      <select id="feedSelect" aria-label="Feed"></select>
+    </label>
+    <button id="newFeedBtn" class="ghost">+ New feed</button>
+  </section>
+
+  <nav class="filters" role="tablist">
+    <button data-status="verified" class="chip active">✅ Verified</button>
+    <button data-status="verified,developing" class="chip">🟡 + Developing</button>
+    <button data-status="" class="chip">All incl. unconfirmed</button>
+  </nav>
+
+  <p id="feedInfo" class="feedinfo"></p>
+  <main id="stories" aria-live="polite"></main>
+  <p id="empty" class="empty" hidden></p>
+
+  <footer class="foot">
+    Verification = independent corroboration across outlets, weighted by source tier. It reduces, but does not eliminate, false reports — always open the sources.
+  </footer>
+
+  <dialog id="feedDialog">
+    <form id="feedForm" method="dialog">
+      <h2>New feed</h2>
+      <label>Country / edition<select name="country" required></select></label>
+      <label>Place <small>(optional city, state or region)</small><input name="place" maxlength="60" placeholder="e.g. Mumbai"></label>
+      <label>Domain<select name="domain" required></select></label>
+      <label>Extra keywords <small>(comma separated; use the local language for non-English editions)</small>
+        <input name="keywords" maxlength="300" placeholder="e.g. SEBI, mutual funds"></label>
+      <p id="domainHint" class="hint"></p>
+      <p id="feedError" class="error" hidden></p>
+      <div class="row">
+        <button value="cancel" formnovalidate class="ghost">Cancel</button>
+        <button id="createFeed" value="create" class="primary">Create &amp; open</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="notifyDialog">
+    <form id="notifyForm" method="dialog">
+      <h2>Alerts</h2>
+      <p id="notifyFeedName" class="hint"></p>
+      <fieldset>
+        <label class="radio"><input type="radio" name="level" value="verified" checked> Verified stories only</label>
+        <label class="radio"><input type="radio" name="level" value="developing"> Developing and verified</label>
+      </fieldset>
+      <p id="notifyMsg" class="hint"></p>
+      <div class="row">
+        <button id="unsubBtn" type="button" class="ghost">Turn off for this feed</button>
+        <button id="subBtn" type="button" class="primary">Turn on</button>
+      </div>
+      <div class="row end"><button value="close" class="ghost">Close</button></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>

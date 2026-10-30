@@ -1,0 +1,25 @@
+{
+  "_comment": "Trust tiers by publisher domain. Patterns: exact domain (matches subdomains too) or '*.suffix'. First match wins in order: blocked, official, wire, major, low. Anything else is 'standard'.",
+  "official": [
+    "*.gov", "*.gov.in", "*.nic.in", "*.gov.uk", "*.gov.au", "*.gc.ca", "*.govt.nz", "*.gov.sg", "*.mil",
+    "*.europa.eu", "who.int", "un.org", "imf.org", "worldbank.org", "rbi.org.in", "sebi.gov.in",
+    "federalreserve.gov", "ecb.europa.eu", "bankofengland.co.uk", "usgs.gov", "noaa.gov", "gdacs.org", "imd.gov.in"
+  ],
+  "wire": [
+    "reuters.com", "apnews.com", "afp.com", "ptinews.com", "aninews.in", "dpa.com", "ansa.it", "efe.com",
+    "kyodonews.net", "yna.co.kr", "xinhuanet.com", "tass.com", "pressassociation.com"
+  ],
+  "major": [
+    "bbc.com", "bbc.co.uk", "nytimes.com", "washingtonpost.com", "wsj.com", "ft.com", "bloomberg.com", "economist.com",
+    "theguardian.com", "npr.org", "cnn.com", "cnbc.com", "abcnews.go.com", "cbsnews.com", "nbcnews.com", "politico.com",
+    "axios.com", "theverge.com", "techcrunch.com", "wired.com", "arstechnica.com", "aljazeera.com", "dw.com",
+    "france24.com", "lemonde.fr", "spiegel.de", "nikkei.com", "asia.nikkei.com", "scmp.com", "straitstimes.com",
+    "abc.net.au", "cbc.ca", "theglobeandmail.com", "thetimes.co.uk", "telegraph.co.uk", "skynews.com",
+    "thehindu.com", "indianexpress.com", "hindustantimes.com", "livemint.com", "economictimes.indiatimes.com",
+    "business-standard.com", "timesofindia.indiatimes.com", "ndtv.com", "moneycontrol.com", "thehindubusinessline.com",
+    "financialexpress.com", "deccanherald.com", "scroll.in", "theprint.in", "indiatoday.in", "news18.com",
+    "dawn.com", "thedailystar.net", "news24.com", "nation.africa", "punchng.com", "folha.uol.com.br", "elpais.com"
+  ],
+  "low": [],
+  "blocked": []
+}

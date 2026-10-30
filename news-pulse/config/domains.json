@@ -1,0 +1,10 @@
+{
+  "markets":  { "label": "Business & Markets", "keywords": ["stock market", "shares", "IPO", "central bank", "interest rate", "inflation", "earnings", "rupee", "Sensex", "Nifty"] },
+  "politics": { "label": "Politics & Policy", "keywords": ["election", "parliament", "minister", "government", "policy", "bill", "cabinet"] },
+  "tech":     { "label": "Technology", "keywords": ["technology", "startup", "artificial intelligence", "cybersecurity", "semiconductor", "data breach", "funding round"] },
+  "health":   { "label": "Health", "keywords": ["outbreak", "hospital", "vaccine", "health ministry", "virus", "epidemic"] },
+  "disaster": { "label": "Disasters & Weather", "keywords": ["earthquake", "flood", "cyclone", "wildfire", "landslide", "evacuation", "tsunami", "heatwave"] },
+  "security": { "label": "Security & Crime", "keywords": ["attack", "explosion", "terror", "shooting", "police", "arrested", "blast"] },
+  "sports":   { "label": "Sports", "keywords": ["cricket", "football", "match", "tournament", "Olympics", "championship"] },
+  "custom":   { "label": "Custom keywords only", "keywords": [] }
+}

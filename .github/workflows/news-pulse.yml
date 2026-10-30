@@ -1,0 +1,32 @@
+name: news-pulse
+
+on:
+  push:
+    paths: ['news-pulse/**', '.github/workflows/news-pulse.yml']
+  pull_request:
+    paths: ['news-pulse/**', '.github/workflows/news-pulse.yml']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: news-pulse
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: news-pulse/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - name: Boot smoke test
+        run: |
+          DATA_DIR=$(mktemp -d) PORT=8099 node src/server.js & pid=$!
+          for i in $(seq 1 20); do curl -fs localhost:8099/api/health && break; sleep 0.5; done
+          curl -fs localhost:8099/api/feeds > /dev/null
+          curl -fs localhost:8099/ | grep -q '<title>NewsPulse</title>'
+          kill $pid
+      - name: Docker build
+        run: docker build -t news-pulse .

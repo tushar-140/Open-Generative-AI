@@ -1,0 +1,19 @@
+{
+  "name": "news-pulse",
+  "version": "1.0.0",
+  "description": "Real-time, corroboration-verified news PWA for any geography and domain, with push notifications.",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test test/*.test.js",
+    "vapid": "node -e \"const k=require('web-push').generateVAPIDKeys();console.log('VAPID_PUBLIC_KEY='+k.publicKey+'\\nVAPID_PRIVATE_KEY='+k.privateKey)\""
+  },
+  "dependencies": {
+    "fast-xml-parser": "^4.5.0",
+    "web-push": "^3.6.7"
+  },
+  "license": "MIT"
+}
