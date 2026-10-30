@@ -205,7 +205,10 @@ async function api(req, res, url) {
   }
 
   if (parts[1] === 'feeds') {
-    if (parts.length === 2 && method === 'GET') return send(res, 200, allFeeds().map(publicFeed));
+    if (parts.length === 2 && method === 'GET') {
+      const list = url.searchParams.get('featured') ? config.feeds : allFeeds();
+      return send(res, 200, list.map(publicFeed));
+    }
 
     if (parts.length === 2 && method === 'POST') {
       const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress;

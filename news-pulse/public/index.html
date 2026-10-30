@@ -22,69 +22,88 @@
   <header class="top">
     <div class="brand">
       <img src="/icons/icon.svg" alt="" width="28" height="28">
-      <span>NewsPulse</span>
-      <span id="live" class="live" title="Live connection"><i></i><b>connecting</b></span>
+      <span class="name">NewsPulse</span>
+      <span id="live" class="live" data-mode="connecting"><i></i><b data-i18n="connecting">connecting</b></span>
     </div>
     <div class="actions">
-      <button id="installBtn" class="ghost" hidden>Install</button>
-      <button id="shareBtn" class="ghost" title="Share this feed">Share</button>
-      <button id="notifyBtn" class="primary" title="Get notified">🔔 Alerts</button>
+      <button id="uiLangBtn" class="ghost" aria-label="Interface language">हिंदी</button>
+      <button id="installBtn" class="ghost" hidden data-i18n="install">Install</button>
+      <button id="shareBtn" class="ghost" data-i18n="share">Share</button>
+      <button id="notifyBtn" class="primary" data-i18n="alerts">🔔 Alerts</button>
     </div>
   </header>
 
-  <section class="controls">
-    <label class="feedpick">
-      <span>Feed</span>
-      <select id="feedSelect" aria-label="Feed"></select>
-    </label>
-    <button id="newFeedBtn" class="ghost">+ New feed</button>
+  <!-- Step 1: choose what to follow -->
+  <section id="finder" class="finder">
+    <button id="finderSummary" class="summary" aria-expanded="false" aria-controls="finderBody">
+      <span id="summaryText"></span>
+      <span class="change" data-i18n="change">Change</span>
+    </button>
+    <form id="finderBody" class="finder-body" autocomplete="off">
+      <div class="field">
+        <span class="step">1</span>
+        <label for="placeInput" data-i18n="where">Where?</label>
+        <div class="where">
+          <select id="countrySelect" aria-label="Country"></select>
+          <input id="placeInput" list="placeList" maxlength="60">
+          <datalist id="placeList"></datalist>
+        </div>
+        <small class="hint" data-i18n="placeHint">State, district or city — optional.</small>
+      </div>
+      <div class="field">
+        <span class="step">2</span>
+        <span class="label" data-i18n="topic">Topic</span>
+        <div id="topicChips" class="chips" role="radiogroup"></div>
+        <input id="keywordsInput" maxlength="200" hidden>
+      </div>
+      <div class="field" id="langField">
+        <span class="step">3</span>
+        <span class="label" data-i18n="newsLang">News language</span>
+        <div id="langChips" class="segmented" role="radiogroup"></div>
+      </div>
+      <p id="finderError" class="error" hidden></p>
+      <button id="showBtn" class="primary wide" type="submit" data-i18n="showNews">Show news</button>
+    </form>
   </section>
 
-  <nav class="filters" role="tablist">
-    <button data-status="verified" class="chip active">✅ Verified</button>
-    <button data-status="verified,developing" class="chip">🟡 + Developing</button>
-    <button data-status="" class="chip">All incl. unconfirmed</button>
+  <!-- Quick switch between feeds -->
+  <section class="shortcuts">
+    <div id="myFeeds" class="chips scroll" aria-label="Your feeds"></div>
+  </section>
+
+  <section class="feedhead">
+    <h1 id="feedTitle"></h1>
+    <p id="feedStatus" class="hint"></p>
+  </section>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-status="verified" class="tab"><span data-i18n="tabVerified">✅ Verified</span> <b data-count="verified"></b></button>
+    <button role="tab" data-status="verified,developing" class="tab"><span data-i18n="tabDeveloping">🟡 + Developing</span> <b data-count="developing"></b></button>
+    <button role="tab" data-status="" class="tab"><span data-i18n="tabAll">All</span> <b data-count="all"></b></button>
   </nav>
 
-  <p id="feedInfo" class="feedinfo"></p>
+  <button id="newPill" class="pill" hidden></button>
   <main id="stories" aria-live="polite"></main>
-  <p id="empty" class="empty" hidden></p>
+  <div id="empty" class="empty" hidden></div>
 
-  <footer class="foot">
-    Verification = independent corroboration across outlets, weighted by source tier. It reduces, but does not eliminate, false reports — always open the sources.
+  <footer class="foot" data-i18n="footer">
+    “Verified” means independent outlets corroborate the story (sister outlets and copied wire text count once). It reduces, but does not eliminate, false reports — open the sources.
   </footer>
-
-  <dialog id="feedDialog">
-    <form id="feedForm" method="dialog">
-      <h2>New feed</h2>
-      <label>Country / edition<select name="country" required></select></label>
-      <label>Place <small>(optional city, state or region)</small><input name="place" maxlength="60" placeholder="e.g. Mumbai"></label>
-      <label>Domain<select name="domain" required></select></label>
-      <label>Extra keywords <small>(comma separated; use the local language for non-English editions)</small>
-        <input name="keywords" maxlength="300" placeholder="e.g. SEBI, mutual funds"></label>
-      <p id="domainHint" class="hint"></p>
-      <p id="feedError" class="error" hidden></p>
-      <div class="row">
-        <button value="cancel" formnovalidate class="ghost">Cancel</button>
-        <button id="createFeed" value="create" class="primary">Create &amp; open</button>
-      </div>
-    </form>
-  </dialog>
 
   <dialog id="notifyDialog">
     <form id="notifyForm" method="dialog">
-      <h2>Alerts</h2>
+      <h2 data-i18n="alertsTitle">Alerts for this feed</h2>
       <p id="notifyFeedName" class="hint"></p>
       <fieldset>
-        <label class="radio"><input type="radio" name="level" value="verified" checked> Verified stories only</label>
-        <label class="radio"><input type="radio" name="level" value="developing"> Developing and verified</label>
+        <label class="radio"><input type="radio" name="level" value="verified" checked> <span data-i18n="levelVerified">Only verified stories</span></label>
+        <label class="radio"><input type="radio" name="level" value="developing"> <span data-i18n="levelDeveloping">Developing and verified</span></label>
       </fieldset>
       <p id="notifyMsg" class="hint"></p>
       <div class="row">
-        <button id="unsubBtn" type="button" class="ghost">Turn off for this feed</button>
-        <button id="subBtn" type="button" class="primary">Turn on</button>
+        <button id="unsubBtn" type="button" class="ghost" data-i18n="turnOff">Turn off</button>
+        <button id="subBtn" type="button" class="primary" data-i18n="turnOn">Turn on</button>
       </div>
-      <div class="row end"><button value="close" class="ghost">Close</button></div>
+      <div class="row end"><button value="close" class="ghost" data-i18n="close">Close</button></div>
     </form>
   </dialog>
 

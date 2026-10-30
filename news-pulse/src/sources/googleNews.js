@@ -1,5 +1,7 @@
 import { config, countryByCode } from '../config.js';
-import { feedKeywords, feedLangs, orGroup, placeAliases } from '../query.js';
+import { feedKeywords, feedLangs, orGroup, placeAliases, withinBudget, groupWords } from '../query.js';
+
+const MAX_QUERY_WORDS = 28;
 import { httpGet, hash } from '../util.js';
 import { parseFeed } from './xml.js';
 
@@ -11,15 +13,18 @@ export function buildUrls(feed) {
   const country = countryByCode.get(feed.country) || countryByCode.get('WORLD');
   return feedLangs(feed).map((ed) => {
     const params = `hl=${encodeURIComponent(ed.hl)}&gl=${ed.gl}&ceid=${encodeURIComponent(ed.ceid)}`;
-    const parts = [orGroup(feedKeywords(feed, ed.lang)), orGroup(placeAliases(feed, ed.lang))];
+    // The place goes first: Google ignores words beyond its limit, and the place is the filter that matters most.
+    const place = placeAliases(feed, ed.lang);
+    let anchors = [];
+    let keywords = feedKeywords(feed, ed.lang);
     // Without a place, an English edition also returns foreign stories ("stock market" → Wall Street).
     // Anchor the query to the country; extras like Sensex/RBI count as anchors too.
-    const anchors = country.anchors?.[ed.lang];
-    if (!feed.place && anchors && parts[0]) {
-      const extras = country.domainExtras?.[feed.domain]?.[ed.lang] || [];
-      parts.push(orGroup([...anchors, ...extras]));
+    if (!feed.place && country.anchors?.[ed.lang] && keywords.length) {
+      anchors = [...new Set([...country.anchors[ed.lang], ...(country.domainExtras?.[feed.domain]?.[ed.lang] || [])])];
+      keywords = keywords.filter((k) => !anchors.includes(k));
     }
-    const q = parts.filter(Boolean).join(' ');
+    keywords = withinBudget(keywords, MAX_QUERY_WORDS - groupWords(place) - groupWords(anchors));
+    const q = [orGroup(place), orGroup(keywords), orGroup(anchors)].filter(Boolean).join(' ');
     if (!q) return { lang: ed.lang, url: `${config.bases.gnews}/rss?${params}` };
     // Regional feeds are lower volume: look back further so they are never empty.
     const when = feed.place ? '12h' : '2h';

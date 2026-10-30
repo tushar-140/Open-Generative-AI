@@ -1,6 +1,7 @@
 import { EventEmitter } from 'node:events';
 import { StoryBook } from './storybook.js';
-import { makeTierResolver, makeGroupResolver, DEVANAGARI } from './verify.js';
+import { makeTierResolver, makeGroupResolver, fingerprint, placesConflict, DEVANAGARI } from './verify.js';
+import { countryByCode } from './config.js';
 import { allPlaceAliases } from './query.js';
 import { embed } from './semantic.js';
 import { hostOf, rootDomain } from './util.js';
@@ -30,7 +31,12 @@ export class Poller extends EventEmitter {
     this.#embedRestored(book);
     const active = this.adapters.filter((a) => a.enabled(feed));
     const maxInterval = Math.max(60, ...active.map((a) => this.config.intervals[a.id]));
+    // Region guard: what the feed covers, as a place fingerprint (the place, else the country).
+    const country = countryByCode.get(feed.country);
+    const region = feed.place || (feed.country !== 'WORLD' ? country?.name : '');
     const st = {
+      region: region ? fingerprint(region) : null,
+      regionDrops: [], // recent headlines dropped by the region guard (diagnostics)
       timers: [],
       // A brand-new feed backfills the last hour; don't fire notifications for that backlog.
       warmUntil: this.books.get(feed.id).size === 0 ? Date.now() + (maxInterval + 60) * 1000 : 0,
@@ -68,12 +74,18 @@ export class Poller extends EventEmitter {
     }
   }
 
-  enrich(item, now) {
+  enrich(item, now, st = null) {
     const host = item.host || hostOf(item.sourceUrl || item.url);
     const tier = item.tier || this.resolveTier(host);
     if (tier === 'blocked' || !host) return null;
     const maxAge = this.config.ingestMaxAgeHours * 3600 * 1000;
     if (item.publishedAt < now - maxAge) return null;
+    // Search engines match words anywhere on the page; drop headlines that are explicitly about
+    // somewhere else ("Israel election" in a Rajasthan feed, "Pakistan stocks" in an India feed).
+    if (st?.region && placesConflict(fingerprint(item.title), st.region)) {
+      st.regionDrops = [item.title, ...st.regionDrops].slice(0, 50);
+      return null;
+    }
     const root = rootDomain(host);
     return {
       ...item,
@@ -110,7 +122,7 @@ export class Poller extends EventEmitter {
     const book = this.books.get(feed.id);
     const st = this.state.get(feed.id);
     if (!book || !st) return;
-    const enriched = items.map((i) => this.enrich(i, now)).filter((a) => a && !book.seen.has(a.id));
+    const enriched = items.map((i) => this.enrich(i, now, st)).filter((a) => a && !book.seen.has(a.id));
     const vecs = await embed(enriched.map((a) => a.title)).catch((e) => {
       console.warn(`[semantic] ${e.message}`);
       return null;

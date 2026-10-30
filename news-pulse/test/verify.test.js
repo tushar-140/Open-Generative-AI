@@ -90,3 +90,14 @@ test('root domain handles multi-part suffixes', () => {
   assert.equal(rootDomain('economictimes.indiatimes.com'), 'indiatimes.com');
   assert.equal(rootDomain('news.bbc.co.uk'), 'bbc.co.uk');
 });
+
+test('headlines about unrelated places never merge; nested places can', async () => {
+  const { placesConflict } = await import('../src/verify.js');
+  const fp = (t) => fingerprint(t);
+  assert.ok(placesConflict(fp('Earthquake of magnitude 4.2 hits Bikaner'), fp('Earthquake of magnitude 5.1 hits Nepal, tremors felt in Bihar')));
+  assert.ok(placesConflict(fp('Fire breaks out at Jaipur chemical factory'), fp('जोधपुर में फैक्ट्री में आग')));
+  assert.ok(!placesConflict(fp('Fire breaks out at Jaipur chemical factory'), fp('राजस्थान: फैक्ट्री में आग')));
+  assert.ok(!placesConflict(fp('इज़राइल में चुनाव'), fp('Israel election results')));
+  assert.deepEqual([...fp('Jaipur Murder: पत्नी की हत्या').places], ['IN:Jaipur']);
+  assert.equal(matchScore(fp('Earthquake of magnitude 4.2 hits Bikaner'), fp('Earthquake of magnitude 5.1 hits Nepal')), 0);
+});

@@ -92,13 +92,41 @@ test('real Rajasthan politics headlines in Hindi and English cluster into biling
   assert.equal(turnout.status, 'verified');
   assert.ok(turnout.titles.hi && turnout.titles.en);
 
-  // Dainik Bhaskar's templated district result pages are one outlet, not corroboration.
-  const sarpanch = find(/जोधपुर: सरपंच/);
-  assert.ok(sarpanch.articles.some((a) => /जयपुर:सरपंच/.test(a.title)));
-  assert.equal(sarpanch.origins, 1);
+  // Dainik Bhaskar's templated result pages for different districts are different stories (place check),
+  // and neither is corroborated.
+  const jodhpur = find(/जोधपुर: सरपंच/);
+  const jaipur = find(/जयपुर:सरपंच/);
+  assert.notEqual(jodhpur.id, jaipur.id);
+  assert.equal(jodhpur.status, 'unconfirmed');
 
   // Unrelated stories stay separate even though they all mention Rajasthan.
   assert.notEqual(find(/Guv calls/).id, find(/PM-KISAN/).id);
   assert.notEqual(find(/Speaker Launches/).id, probe.id);
   assert.ok(stories.length >= 10, `expected separate stories, got ${stories.length}`);
+});
+
+test('region guard drops headlines explicitly about other places', async () => {
+  const poller = new Poller({ config, adapters: [], notifier: { notify: async () => {} }, books: new Map() });
+  const raj = { id: 'raj2', country: 'IN', place: 'Rajasthan', domain: 'politics', keywords: [] };
+  const ind = { id: 'ind2', country: 'IN', place: '', domain: 'markets', keywords: [] };
+  poller.add(raj);
+  poller.add(ind);
+  poller.stop();
+  const now = Date.now();
+  const item = (id, title) => ({ id, title, url: `https://x.example/${id}`, sourceUrl: 'https://x.example', publishedAt: now - 60000 });
+  await poller.ingest(raj, [
+    item('a', "Israel's election results are in. Here's what could happen next"),
+    item('b', 'Jaipur: Congress protests outside BJP office'),
+    item('c', 'CM Bhajanlal says Congress does not believe in democracy'),
+    item('d', 'बिहार में चुनाव प्रचार तेज'),
+  ]);
+  const kept = poller.books.get('raj2').list().map((s) => s.title);
+  assert.deepEqual(kept.sort(), ['CM Bhajanlal says Congress does not believe in democracy', 'Jaipur: Congress protests outside BJP office']);
+  await poller.ingest(ind, [
+    item('e', 'Pakistan Stock Market News, PSX Business News & Updates'),
+    item('f', 'US stock market crash today: Why are Dow Jones, Nasdaq falling?'),
+    item('g', 'Sensex Gains 308 Points, Nifty Reclaims 23,000'),
+    item('h', 'India-US trade deal lifts IT stocks'),
+  ]);
+  assert.equal(poller.books.get('ind2').size, 2);
 });

@@ -1,20 +1,125 @@
 {
   "_comment": "Headline pairs used to calibrate and regression-test story matching. same=true means the same event.",
   "pairs": [
-    { "same": true,  "a": "Gehlot demands CBI-ED probe into Shikhar Agarwal: Says removing him from post is not enough", "b": "Gehlot demands CBI, ED probe into large property deals linked to senior Rajasthan IAS officer" },
-    { "same": true,  "a": "SIR conducted 10 times under Congress governments, not a new exercise: Rajasthan BJP chief", "b": "SIR is not new, conducted 10 times during Congress rule: Madan Rathore" },
-    { "same": true,  "a": "Rajasthan: Gehlot seeks CBI, ED probe into IAS officer’s family property", "b": "गहलोत ने IAS अधिकारी के परिवार की संपत्ति की CBI-ED जांच मांगी" },
-    { "same": true,  "a": "Rajasthan panchayat polls phase 2: 78.77% turnout", "b": "पंचायती राज चुनाव: प्रदेश में पंच-सरपंच के लिए 78.77 फीसदी मतदान" },
-    { "same": true,  "a": "RBI keeps repo rate unchanged at 6.25%", "b": "आरबीआई ने रेपो रेट 6.25% पर बरकरार रखा" },
-    { "same": true,  "a": "Earthquake of magnitude 4.2 hits Bikaner, no damage reported", "b": "बीकानेर में 4.2 तीव्रता का भूकंप, कोई नुकसान नहीं" },
-    { "same": true,  "a": "राजस्थान में भारी बारिश का अलर्ट, 10 जिलों में स्कूल बंद", "b": "मौसम विभाग ने 10 जिलों में भारी बारिश की चेतावनी दी, स्कूलों में छुट्टी" },
-    { "same": true,  "a": "Sensex gains 308 points, Nifty reclaims 23,000 as IT and pharma stocks lead recovery", "b": "Sensex Gains 308 Points, Nifty Closes Above 23,000 as IT and Pharma Stocks Lead Rally" },
-    { "same": false, "a": "Sensex falls 500 points on weak global cues", "b": "Sensex rises 300 points as banks gain" },
-    { "same": false, "a": "Rajasthan Guv calls for transforming universities into centres of excellence", "b": "Over 66 Lakh Farmers In Rajasthan Benefitted Under PM-KISAN Scheme: CM Sharma" },
-    { "same": false, "a": "अशोक गहलोत का BJP को संदेश, भारत बचाओ रैली के बाद गिर गई थी सरकार", "b": "Gehlot demands CBI, ED probe into large property deals linked to senior Rajasthan IAS officer" },
-    { "same": false, "a": "Rajasthan BJP announces candidates for Jaipur civic polls", "b": "Rajasthan BJP slams Congress over Jaipur water crisis" },
-    { "same": false, "a": "Fire breaks out at Jaipur chemical factory, two dead", "b": "जोधपुर में कपड़ा फैक्ट्री में आग, कोई हताहत नहीं" },
-    { "same": false, "a": "CM Bhajanlal Sharma inaugurates hospital in Udaipur", "b": "मुख्यमंत्री भजनलाल शर्मा ने कोटा में सड़क परियोजना का शिलान्यास किया" },
-    { "same": false, "a": "Earthquake of magnitude 4.2 hits Bikaner", "b": "Earthquake of magnitude 5.1 hits Nepal, tremors felt in Bihar" }
+    {
+      "same": true,
+      "a": "Gehlot demands CBI-ED probe into Shikhar Agarwal: Says removing him from post is not enough",
+      "b": "Gehlot demands CBI, ED probe into large property deals linked to senior Rajasthan IAS officer"
+    },
+    {
+      "same": true,
+      "a": "SIR conducted 10 times under Congress governments, not a new exercise: Rajasthan BJP chief",
+      "b": "SIR is not new, conducted 10 times during Congress rule: Madan Rathore"
+    },
+    {
+      "same": true,
+      "a": "Rajasthan: Gehlot seeks CBI, ED probe into IAS officer’s family property",
+      "b": "गहलोत ने IAS अधिकारी के परिवार की संपत्ति की CBI-ED जांच मांगी"
+    },
+    {
+      "same": true,
+      "a": "Rajasthan panchayat polls phase 2: 78.77% turnout",
+      "b": "पंचायती राज चुनाव: प्रदेश में पंच-सरपंच के लिए 78.77 फीसदी मतदान"
+    },
+    {
+      "same": true,
+      "a": "RBI keeps repo rate unchanged at 6.25%",
+      "b": "आरबीआई ने रेपो रेट 6.25% पर बरकरार रखा"
+    },
+    {
+      "same": true,
+      "a": "Earthquake of magnitude 4.2 hits Bikaner, no damage reported",
+      "b": "बीकानेर में 4.2 तीव्रता का भूकंप, कोई नुकसान नहीं"
+    },
+    {
+      "same": true,
+      "a": "राजस्थान में भारी बारिश का अलर्ट, 10 जिलों में स्कूल बंद",
+      "b": "मौसम विभाग ने 10 जिलों में भारी बारिश की चेतावनी दी, स्कूलों में छुट्टी"
+    },
+    {
+      "same": true,
+      "a": "Sensex gains 308 points, Nifty reclaims 23,000 as IT and pharma stocks lead recovery",
+      "b": "Sensex Gains 308 Points, Nifty Closes Above 23,000 as IT and Pharma Stocks Lead Rally"
+    },
+    {
+      "same": false,
+      "a": "Sensex falls 500 points on weak global cues",
+      "b": "Sensex rises 300 points as banks gain"
+    },
+    {
+      "same": false,
+      "a": "Rajasthan Guv calls for transforming universities into centres of excellence",
+      "b": "Over 66 Lakh Farmers In Rajasthan Benefitted Under PM-KISAN Scheme: CM Sharma"
+    },
+    {
+      "same": false,
+      "a": "अशोक गहलोत का BJP को संदेश, भारत बचाओ रैली के बाद गिर गई थी सरकार",
+      "b": "Gehlot demands CBI, ED probe into large property deals linked to senior Rajasthan IAS officer"
+    },
+    {
+      "same": false,
+      "a": "Rajasthan BJP announces candidates for Jaipur civic polls",
+      "b": "Rajasthan BJP slams Congress over Jaipur water crisis"
+    },
+    {
+      "same": false,
+      "a": "Fire breaks out at Jaipur chemical factory, two dead",
+      "b": "जोधपुर में कपड़ा फैक्ट्री में आग, कोई हताहत नहीं"
+    },
+    {
+      "same": false,
+      "a": "CM Bhajanlal Sharma inaugurates hospital in Udaipur",
+      "b": "मुख्यमंत्री भजनलाल शर्मा ने कोटा में सड़क परियोजना का शिलान्यास किया"
+    },
+    {
+      "same": false,
+      "a": "Earthquake of magnitude 4.2 hits Bikaner",
+      "b": "Earthquake of magnitude 5.1 hits Nepal, tremors felt in Bihar"
+    },
+    {
+      "same": true,
+      "a": "SEBI eases KYC norms for foreign investors, extends review cycle up to 8 years",
+      "b": "SEBI ने विदेशी निवेशकों को दी बड़ी राहत, KYC रिव्यू टाइमलाइन 3 से बढ़कर 8 साल हुई; 1 दिसंबर से लागू होंगे नियम"
+    },
+    {
+      "same": true,
+      "a": "Husband sits beside wife's body after killing her in Jaipur: 3 children were also in room",
+      "b": "Jaipur Murder News: जयपुर में पत्नी की हत्या कर 2 दिन तक लाश के पास रहा पति, कमरे में साथ थे 3 मासूम बच्चे"
+    },
+    {
+      "same": true,
+      "a": "Six mobile phones, other prohibited items seized during surprise search at Rajasthan jail",
+      "b": "प्रतापगढ़ जेल में पुलिस की बड़ी कार्रवाई, जमीन में गड्ढे खोदकर छिपाए 6 मोबाइल बरामद"
+    },
+    {
+      "same": true,
+      "a": "यूपी में तीसरी बार सरकार बना दो, यहां भी यूसीसी लागू करेंगे, अमित शाह का बड़ा ऐलान",
+      "b": "‘अगर भाजपा सत्ता में लौटी तो UCC लागू होगा’, यूपी विधानसभा चुनाव से पहले अमित शाह का ऐलान"
+    },
+    {
+      "same": true,
+      "a": "Markets rally for second straight session, Sensex gains 308 points, Nifty reclaims 23,050 mark",
+      "b": "Sensex Gains 308 Points, Nifty Closes Above 23,000 as IT and Pharma Stocks Lead Rally"
+    },
+    {
+      "same": false,
+      "a": "US tech stocks see sharp falls over AI cost concerns",
+      "b": "KOSPI Plummets on US Tech Earnings Shock"
+    },
+    {
+      "same": false,
+      "a": "Atomberg Technologies, Ratnadeep Retail among four IPOs to receive SEBI nod",
+      "b": "SEBI eases KYC norms for foreign investors, extends review cycle up to 8 years"
+    },
+    {
+      "same": false,
+      "a": "जयपुर:सरपंच चुनाव के दूसरे चरण के नतीजे सबसे पहले",
+      "b": "जोधपुर: सरपंच चुनाव के दूसरे चरण के नतीजे सबसे पहले"
+    },
+    {
+      "same": false,
+      "a": "Amit Shah challenges Rahul Gandhi, Akhilesh Yadav to debate SIR in Parliament",
+      "b": "SIR conducted 10 times under Congress governments, not a new exercise: Rajasthan BJP chief"
+    }
   ]
 }

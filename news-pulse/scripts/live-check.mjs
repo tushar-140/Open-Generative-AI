@@ -43,6 +43,7 @@ const feeds = [
   { id: 'in-markets', country: 'IN', place: '', domain: 'markets', keywords: [] },
   { id: 'up-politics-hi', country: 'IN', place: 'उत्तर प्रदेश', domain: 'politics', keywords: [], langs: ['hi'] },
   { id: 'us-tech', country: 'US', place: '', domain: 'tech', keywords: [] },
+  { id: 'bihar-disaster', country: 'IN', place: 'Bihar', domain: 'disaster', keywords: [] },
 ];
 const poller = new Poller({ config, adapters, notifier: { notify: async () => {} }, books: new Map() });
 let totalItems = 0;
@@ -59,6 +60,8 @@ for (const feed of feeds) {
   const fresh = articles.length ? ago(Math.max(...articles.map((a) => a.publishedAt))) : '-';
   log(`## ${feedLabel(feed, 'en')}  /  ${feedLabel(feed, 'hi')}`);
   log(`Sources: ${Object.entries(src).map(([k, s]) => `${k} ${s.lastError ? `❌ ${s.lastError}` : `✅ ${s.lastCount} items`}`).join(' · ')}`);
+  const drops = poller.state.get(feed.id).regionDrops;
+  log(`Region guard dropped ${drops.length} off-region headline(s)${drops.length ? `, e.g. “${drops.slice(0, 3).join('”, “')}”` : ''}`);
   log(`Articles kept: ${articles.length} (${Object.entries(byLang).map(([k, v]) => `${k}: ${v}`).join(', ')}), newest ${fresh} ago · stories: ${JSON.stringify(book.counts())} · bilingual stories: ${stories.filter((s) => s.langs.length > 1).length}\n`);
   log('| status | outlets | lang | age | headline | why |');
   log('|---|---|---|---|---|---|');

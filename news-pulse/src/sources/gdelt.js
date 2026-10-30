@@ -1,5 +1,5 @@
 import { config, countryByCode } from '../config.js';
-import { allPlaceAliases, feedKeywords, feedLangs, orGroup, DEVANAGARI } from '../query.js';
+import { allPlaceAliases, feedKeywords, feedLangs, orGroup, withinBudget, DEVANAGARI } from '../query.js';
 import { httpGet, hash, canonicalUrl } from '../util.js';
 
 export const id = 'gdelt';
@@ -12,7 +12,8 @@ export function buildUrl(feed) {
   const c = countryByCode.get(feed.country);
   // GDELT matches English keywords against machine-translated text in ~65 languages,
   // so English terms also find Hindi articles. It rejects terms shorter than 3 characters.
-  const kw = feedKeywords(feed, 'en').filter((k) => k.length >= 3 && !DEVANAGARI.test(k));
+  // GDELT rejects long queries ("too short or too long"): keep the most specific terms.
+  const kw = withinBudget(feedKeywords(feed, 'en').filter((k) => k.length >= 3 && !DEVANAGARI.test(k)), 14);
   const place = allPlaceAliases(feed).filter((a) => !DEVANAGARI.test(a));
   const parts = [orGroup(kw), orGroup(place.map((p) => (/\s/.test(p) ? p : `"${p}"`)))];
   // Without keywords or a place the query would match a whole country's output: skip.

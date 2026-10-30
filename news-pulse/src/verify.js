@@ -1,3 +1,5 @@
+import { config } from './config.js';
+
 // Story clustering and corroboration scoring.
 //
 // A "story" is a cluster of articles whose headlines describe the same event. A story's status:
@@ -29,7 +31,7 @@ const HI_STOP = new Set(
     'नई नए खबर खबरें लाइव अपडेट पढ़ें देखें सबसे पहले बोले बोली होने हो रहा जा रहे लिया मिला मिली गये').split(' '),
 );
 
-export const DEVANAGARI = /[ऀ-ॿ]/;
+export const DEVANAGARI = /[\u0900-\u097F]/;
 const CJK = /[぀-ヿ㐀-鿿가-힯]/;
 
 export function normalizeTitle(t) {
@@ -37,7 +39,9 @@ export function normalizeTitle(t) {
     .replace(/[०-९]/g, (d) => String(d.charCodeAt(0) - 0x966))
     .replace(/(\d)[,.](?=\d)/g, '$1')
     .normalize('NFKD')
-    .replace(/[̀-ͯ]/g, '')
+    .replace(/[\u0300-\u036f]/g, '')
+    // Outlets write ज़/ज, फ़/फ interchangeably; keep the nukta only where it changes the sound (ड़, ढ़).
+    .replace(/([^\u0921\u0922])\u093C/g, '$1')
     .toLowerCase()
     .replace(/[^\p{L}\p{M}\p{N}\s]/gu, ' ')
     .replace(/\s+/g, ' ')
@@ -124,7 +128,69 @@ export function fingerprint(title) {
     if (k.length >= 3) skel.add(k);
   }
   const script = DEVANAGARI.test(title) ? 'deva' : CJK.test(title) ? 'cjk' : 'latn';
-  return { script, tokens, skel };
+  const fp = { script, tokens, skel };
+  fp.places = PLACE_INDEX_READY ? placesIn(fp) : new Set();
+  // Two-letter country abbreviations are dropped by the tokenizer; catch them in the raw title (case-sensitive).
+  if (PLACE_INDEX_READY) for (const [re, id] of SHORT_PLACES) if (re.test(title)) fp.places.add(id);
+  return fp;
+}
+
+// --- places ----------------------------------------------------------------
+// Countries (from ICU, English + Hindi names) and the gazetteer (Indian states and cities with parents).
+// Two headlines naming unrelated places ("Bikaner" vs "Nepal") are never the same story.
+let PLACE_INDEX_READY = false;
+const SHORT_PLACES = [[/\bU\.?S\.?(?=[\s,:;'’-]|$)/, 'US'], [/\bUK\b/, 'GB']];
+const PLACES = [];
+const PARENT = new Map();
+
+function buildPlaceIndex() {
+  const en = new Intl.DisplayNames(['en'], { type: 'region', fallback: 'none' });
+  const hi = new Intl.DisplayNames(['hi'], { type: 'region', fallback: 'none' });
+  const extra = { US: ['USA', 'America', 'United States'], GB: ['Britain', 'England', 'ब्रिटेन'], AE: ['UAE', 'Dubai'], IN: ['भारत'] };
+  for (const c of config.countries) if (c.code !== 'WORLD') extra[c.code] = [...(extra[c.code] || []), c.name, c.nameHi];
+  const add = (id, names, parent) => {
+    const keys = [...new Set(names.filter(Boolean))].map(tokenize).filter((k) => k.size);
+    PLACES.push({ id, keys });
+    if (parent) PARENT.set(id, parent);
+  };
+  for (let a = 65; a <= 90; a++) {
+    for (let b = 65; b <= 90; b++) {
+      const code = String.fromCharCode(a, b);
+      const name = en.of(code);
+      if (name && name !== code) add(code, [name, hi.of(code), ...(extra[code] || [])]);
+    }
+  }
+  for (const [cc, list] of Object.entries(config.places)) {
+    for (const p of list) add(`${cc}:${p.en[0]}`, [...p.en, ...p.hi], p.state ? `${cc}:${p.state}` : cc);
+  }
+  PLACE_INDEX_READY = true;
+}
+
+const subset = (small, big) => small.size > 0 && [...small].every((k) => big.has(k));
+
+function placesIn(fp) {
+  const found = new Set();
+  for (const p of PLACES) {
+    // Exact words only: every place has its Hindi and English spellings in the index, and phonetic
+    // keys are too loose for single words (पत्नी "wife" ~ Patna).
+    if (p.keys.some((k) => subset(k, fp.tokens))) found.add(p.id);
+  }
+  return found;
+}
+
+const lineage = (id) => {
+  const out = [id];
+  for (let p = PARENT.get(id); p; p = PARENT.get(p)) out.push(p);
+  return out;
+};
+
+// True when both headlines name places and none of them coincide or contain one another.
+export function placesConflict(a, b) {
+  if (!a.places?.size || !b.places?.size) return false;
+  for (const x of a.places) {
+    for (const y of b.places) if (lineage(x).includes(y) || lineage(y).includes(x)) return false;
+  }
+  return true;
 }
 
 // --- matching --------------------------------------------------------------
@@ -175,6 +241,7 @@ export function semanticScore(a, b, isCommon, thresholds) {
 // Returns a match score (0 = different stories). `isCommon(key)` drops terms that appear across
 // many stories in this feed (e.g. the feed's own place name), which otherwise cause false merges.
 export function matchScore(a, b, isCommon = () => false, thresholds = null) {
+  if (placesConflict(a, b)) return 0;
   return Math.max(lexicalScore(a, b, isCommon), semanticScore(a, b, isCommon, thresholds));
 }
 
@@ -282,3 +349,5 @@ export function reasonText(r) {
 export function leadArticle(articles) {
   return articles.reduce((best, a) => (!best || better(a, best) ? a : best), null);
 }
+
+buildPlaceIndex();

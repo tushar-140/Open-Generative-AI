@@ -43,8 +43,27 @@ export function feedKeywords(feed, lang = 'en') {
   // Keywords typed in the edition's script; fall back to all of them if none match.
   const scripted = custom.filter((k) => (lang === 'hi') === DEVANAGARI.test(k));
   const own = scripted.length || feed.domain !== 'custom' ? scripted : custom;
-  return [...new Set([...preset, ...extras, ...own].map((k) => k.trim()).filter(Boolean))];
+  // Most specific first, so a word budget keeps the terms that matter.
+  return [...new Set([...own, ...extras, ...preset].map((k) => k.trim()).filter(Boolean))];
 }
+
+const words = (term) => term.trim().split(/\s+/).length;
+
+// Search engines ignore words past a limit (Google: ~32), silently dropping later terms such as the place.
+// Keep terms, in priority order, while "a OR b OR c" stays within maxWords.
+export function withinBudget(terms, maxWords) {
+  const out = [];
+  let used = 0;
+  for (const t of terms) {
+    const cost = words(t) + (out.length ? 1 : 0);
+    if (used + cost > maxWords) break;
+    out.push(t);
+    used += cost;
+  }
+  return out;
+}
+
+export const groupWords = (terms) => (terms.length ? terms.reduce((n, t) => n + words(t), 0) + terms.length - 1 : 0);
 
 const quote = (k) => (/[\s.]/.test(k) ? `"${k.replace(/"/g, '')}"` : k);
 

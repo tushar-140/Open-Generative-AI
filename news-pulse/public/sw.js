@@ -1,5 +1,5 @@
-const SHELL = 'np-shell-v1';
-const DATA = 'np-data-v1';
+const SHELL = 'np-shell-v2';
+const DATA = 'np-data-v2';
 const SHELL_FILES = ['/', '/app.js', '/styles.css', '/manifest.webmanifest', '/icons/icon.svg', '/icons/icon-192.png'];
 
 self.addEventListener('install', (e) => {

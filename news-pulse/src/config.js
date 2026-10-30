@@ -45,8 +45,8 @@ export const config = {
     enabled: env.SEMANTIC_MATCH !== '0',
     model: env.SEMANTIC_MODEL || 'Xenova/paraphrase-multilingual-MiniLM-L12-v2',
     // Cosine similarity needed to merge two headlines; calibrated on real Hindi/English pairs.
-    sameLang: Number(env.SEMANTIC_SAME_LANG || 0.75),
-    crossLang: Number(env.SEMANTIC_CROSS_LANG || 0.7),
+    sameLang: Number(env.SEMANTIC_SAME_LANG || 0.62),
+    crossLang: Number(env.SEMANTIC_CROSS_LANG || 0.62),
   },
   xBearerToken: env.X_BEARER_TOKEN || '',
   channels: {

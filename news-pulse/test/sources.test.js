@@ -13,19 +13,20 @@ test('regional feed queries both English and Hindi editions with localised place
   assert.deepEqual(urls.map((u) => u.lang), ['en', 'hi']);
   const en = q(urls[0].url);
   const hi = q(urls[1].url);
-  assert.match(en, /^\(election OR minister OR "chief minister" OR MLA OR assembly/);
-  assert.match(en, /BJP OR Congress/);
-  assert.match(en, / Rajasthan when:12h$/);
-  assert.match(hi, /^\(चुनाव OR मंत्री OR मुख्यमंत्री/);
-  assert.match(hi, /भाजपा OR कांग्रेस/);
-  assert.match(hi, / राजस्थान when:12h$/);
+  // Place first, and the whole query stays inside Google's word limit so the place is never dropped.
+  assert.match(en, /^Rajasthan \(BJP OR Congress OR "Lok Sabha" OR "Rajya Sabha" OR "Vidhan Sabha" OR election OR minister OR "chief minister"/);
+  assert.match(hi, /^राजस्थान \(भाजपा OR कांग्रेस OR लोकसभा OR राज्यसभा OR चुनाव OR मंत्री OR मुख्यमंत्री/);
+  for (const q2 of [en, hi]) {
+    assert.match(q2, / when:12h$/);
+    assert.ok(q2.replace(/[()]/g, '').split(/\s+/).length <= 30, q2);
+  }
   assert.equal(new URL(urls[1].url).searchParams.get('ceid'), 'IN:hi');
 });
 
 test('place typed in Hindi resolves to the same aliases', () => {
   const urls = gnews.buildUrls({ country: 'IN', place: 'राजस्थान', domain: 'politics', langs: ['en'] });
   assert.equal(urls.length, 1);
-  assert.match(q(urls[0].url), / Rajasthan when:12h$/);
+  assert.match(q(urls[0].url), /^Rajasthan /);
 });
 
 test('cities with alternate spellings search all of them', () => {
@@ -35,13 +36,14 @@ test('cities with alternate spellings search all of them', () => {
 
 test('country feeds without a place are anchored to the country in English only', () => {
   const [en, hi] = gnews.buildUrls({ country: 'IN', place: '', domain: 'markets', keywords: [] });
-  assert.match(q(en.url), /\(India OR Indian OR Sensex OR Nifty OR RBI OR SEBI OR rupee\) when:2h$/);
+  assert.match(q(en.url), / \(India OR Indian OR Sensex OR Nifty OR RBI OR SEBI OR rupee\) when:2h$/);
+  assert.doesNotMatch(q(en.url), /\(.*Sensex.*\).*\(.*Sensex/);
   assert.doesNotMatch(q(hi.url), /India/);
 });
 
 test('custom English keywords still work in the Hindi edition when no Hindi ones are given', () => {
   const [, hi] = gnews.buildUrls({ country: 'IN', place: 'Jaipur', domain: 'custom', keywords: ['metro'] });
-  assert.match(q(hi.url), /^metro जयपुर when:12h$/);
+  assert.match(q(hi.url), /^जयपुर metro when:12h$/);
 });
 
 test('google news without keywords falls back to top stories', () => {
@@ -60,8 +62,8 @@ test('google news parse strips publisher and section suffixes and tags language'
 test('gdelt query covers place aliases, both languages and source country', () => {
   const u = new URL(gdelt.buildUrl({ country: 'IN', place: 'Rajasthan', domain: 'politics', keywords: [] }));
   const query = u.searchParams.get('query');
-  assert.match(query, /^\(election OR minister/);
-  assert.match(query, /"Rajasthan" sourcecountry:india \(sourcelang:english OR sourcelang:hindi\)$/);
+  assert.match(query, /^\(BJP OR Congress OR "Lok Sabha"/);
+  assert.match(query, /\) "Rajasthan" sourcecountry:india \(sourcelang:english OR sourcelang:hindi\)$/);
   assert.equal(u.searchParams.get('timespan'), '12h');
 });
 
@@ -99,4 +101,11 @@ test('x posts are signals unless from an official handle', () => {
   );
   assert.equal(items[0].tier, 'official');
   assert.equal(items[1].tier, 'social');
+});
+
+test('long keyword lists are trimmed instead of pushing the place out of the query', () => {
+  const keywords = Array.from({ length: 30 }, (_, i) => `keyword${i}`);
+  const [en] = gnews.buildUrls({ country: 'IN', place: 'Jaipur', domain: 'custom', keywords, langs: ['en'] });
+  assert.match(q(en.url), /^Jaipur \(keyword0 OR /);
+  assert.ok(q(en.url).split(/\s+/).length <= 30);
 });
