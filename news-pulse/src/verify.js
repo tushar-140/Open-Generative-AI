@@ -142,13 +142,17 @@ let PLACE_INDEX_READY = false;
 const SHORT_PLACES = [[/\bU\.?S\.?(?=[\s,:;'’-]|$)/, 'US'], [/\bUK\b/, 'GB']];
 const PLACES = [];
 const PARENT = new Map();
+// National capitals are mentioned in regional stories all the time ("Gehlot… Delhi pahunchen");
+// for the region guard they never mark a story as off-region.
+export const NEUTRAL_PLACES = new Set();
 
 function buildPlaceIndex() {
   const en = new Intl.DisplayNames(['en'], { type: 'region', fallback: 'none' });
   const hi = new Intl.DisplayNames(['hi'], { type: 'region', fallback: 'none' });
   const extra = { US: ['USA', 'America', 'United States'], GB: ['Britain', 'England', 'ब्रिटेन'], AE: ['UAE', 'Dubai'], IN: ['भारत'] };
   for (const c of config.countries) if (c.code !== 'WORLD') extra[c.code] = [...(extra[c.code] || []), c.name, c.nameHi];
-  const add = (id, names, parent) => {
+  const add = (id, names, parent, neutral) => {
+    if (neutral) NEUTRAL_PLACES.add(id);
     const keys = [...new Set(names.filter(Boolean))].map(tokenize).filter((k) => k.size);
     PLACES.push({ id, keys });
     if (parent) PARENT.set(id, parent);
@@ -161,7 +165,7 @@ function buildPlaceIndex() {
     }
   }
   for (const [cc, list] of Object.entries(config.places)) {
-    for (const p of list) add(`${cc}:${p.en[0]}`, [...p.en, ...p.hi], p.state ? `${cc}:${p.state}` : cc);
+    for (const p of list) add(`${cc}:${p.en[0]}`, [...p.en, ...p.hi], p.state ? `${cc}:${p.state}` : cc, p.neutral);
   }
   PLACE_INDEX_READY = true;
 }
@@ -185,9 +189,11 @@ const lineage = (id) => {
 };
 
 // True when both headlines name places and none of them coincide or contain one another.
-export function placesConflict(a, b) {
-  if (!a.places?.size || !b.places?.size) return false;
-  for (const x of a.places) {
+// `ignore` lists places on `a`'s side that never count (see NEUTRAL_PLACES).
+export function placesConflict(a, b, ignore = null) {
+  const aPlaces = ignore ? [...(a.places || [])].filter((p) => !ignore.has(p)) : [...(a.places || [])];
+  if (!aPlaces.length || !b.places?.size) return false;
+  for (const x of aPlaces) {
     for (const y of b.places) if (lineage(x).includes(y) || lineage(y).includes(x)) return false;
   }
   return true;

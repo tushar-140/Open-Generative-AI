@@ -68,7 +68,13 @@ This is corroboration, not fact-checking. Clustering is tuned to **avoid wrong m
 - the top stories with their status;
 - the bilingual merges it found.
 
-It also scores the matcher on labelled headline pairs in `scripts/calibration-pairs.json`. The embedding thresholds (`SEMANTIC_SAME_LANG`, `SEMANTIC_CROSS_LANG`, both 0.62) come from that run: same-event pairs scored 0.62–0.88 and different-event pairs at most 0.57, apart from one earthquake pair that the place veto now handles.
+It also scores the matcher on labelled headline pairs in `scripts/calibration-pairs.json`. Most pairs are real headlines from those live runs; a few were written by hand to exercise Hindi↔English matching.
+
+Results from the 30 Oct 2026 runs:
+- **Freshness**: every Indian feed had stories 2–18 min old. Rajasthan politics alone yielded about 105 items, ~80% in Hindi.
+- **Bilingual merges** were found in every Indian feed. For example, "SIR is not new" was confirmed by ThePrint, Hans India, Bhaskar Hindi and Prabhasakshi, and the Cyclone Arnab story in the Bihar feed combined 22 outlets across Hindi and English.
+- **Calibration**: 24/24 labelled pairs decided correctly. The embedding thresholds (`SEMANTIC_SAME_LANG`, `SEMANTIC_CROSS_LANG` = 0.62) come from this: same-event pairs scored 0.62–0.88, and different-event pairs at most 0.57. The exceptions were two pairs (0.61, 0.87) about different places, which the place veto handles.
+- **GDELT** answered 429 or returned 0 articles from GitHub's shared runners, so its contribution is **unverified**. Every result above came from Google News.
 
 ## Automated update & notification workflow
 
@@ -153,4 +159,5 @@ CI (`.github/workflows/news-pulse.yml`) runs the tests, a boot smoke test and a 
 - Google News RSS is an unofficial endpoint and is intended for personal/non-commercial use. For commercial use, swap in a licensed news API by adding an adapter in `src/sources/`.
 - Clustering prefers missing a merge to making a wrong one. Very differently worded reports can stay as separate cards; each card is still verified on its own sources.
 - The region guard relies on place names in headlines. Districts missing from `config/places.json` can't be used to exclude or confirm stories.
-- On shared IPs (like CI runners) GDELT often answers 429. A dedicated server is usually fine, and Google News carries the load either way.
+- GDELT is best-effort: from CI it answered 429 or returned nothing, so it has not been verified. Google News carries the load.
+- Google News RSS is the single verified source. If it rate-limits or changes format, feeds go quiet until it recovers. The per-source ✓/⚠ status under each feed title shows this. Adding official RSS feeds per region spreads the risk.

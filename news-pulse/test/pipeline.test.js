@@ -119,9 +119,12 @@ test('region guard drops headlines explicitly about other places in state/city f
     item('b', 'Jaipur: Congress protests outside BJP office'),
     item('c', 'CM Bhajanlal says Congress does not believe in democracy'),
     item('d', 'बिहार में चुनाव प्रचार तेज'),
+    // Real headline that an early version wrongly dropped: Delhi is mentioned, but it is Rajasthan politics.
+    item('e2', 'गहलोत ने इंदिरा गांधी की 1978 की रैली याद दिलाई, बोले- अब वोट बचाने के लिए दिल्ली पहुंचें'),
   ]);
   const kept = poller.books.get('raj2').list().map((s) => s.title);
-  assert.deepEqual(kept.sort(), ['CM Bhajanlal says Congress does not believe in democracy', 'Jaipur: Congress protests outside BJP office']);
+  assert.equal(kept.length, 3);
+  assert.ok(!kept.some((t) => /Israel|बिहार/.test(t)));
   // Country feeds keep stories that mention other countries (Indian companies abroad, trade deals).
   await poller.ingest(ind, [item('e', "Tata Motors acquires majority stake in Italy's Iveco"), item('h', 'India-US trade deal lifts IT stocks')]);
   assert.equal(poller.books.get('ind2').size, 2);

@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events';
 import { StoryBook } from './storybook.js';
-import { makeTierResolver, makeGroupResolver, fingerprint, placesConflict, DEVANAGARI } from './verify.js';
+import { makeTierResolver, makeGroupResolver, fingerprint, placesConflict, NEUTRAL_PLACES, DEVANAGARI } from './verify.js';
 import { allPlaceAliases } from './query.js';
 import { embed } from './semantic.js';
 import { hostOf, rootDomain } from './util.js';
@@ -32,8 +32,11 @@ export class Poller extends EventEmitter {
     const maxInterval = Math.max(60, ...active.map((a) => this.config.intervals[a.id]));
     // Region guard for state/city feeds (country feeds keep foreign-related stories such as
     // "Tata Motors buys Italy's Iveco"; their queries are anchored to the country instead).
+    const region = feed.place ? fingerprint(feed.place) : null;
     const st = {
-      region: feed.place ? fingerprint(feed.place) : null,
+      region,
+      // A Delhi feed must still treat Delhi as a real place.
+      neutral: region && ![...region.places].some((p) => NEUTRAL_PLACES.has(p)) ? NEUTRAL_PLACES : null,
       regionDrops: [], // recent headlines dropped by the region guard (diagnostics)
       timers: [],
       // A brand-new feed backfills the last hour; don't fire notifications for that backlog.
@@ -80,7 +83,7 @@ export class Poller extends EventEmitter {
     if (item.publishedAt < now - maxAge) return null;
     // Search engines match words anywhere on the page; drop headlines that are explicitly about
     // somewhere else ("Israel election" in a Rajasthan feed, "Pakistan stocks" in an India feed).
-    if (st?.region && placesConflict(fingerprint(item.title), st.region)) {
+    if (st?.region && placesConflict(fingerprint(item.title), st.region, st.neutral)) {
       st.regionDrops = [item.title, ...st.regionDrops].slice(0, 50);
       return null;
     }

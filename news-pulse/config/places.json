@@ -261,7 +261,8 @@
    "hi": [
     "दिल्ली"
    ],
-   "type": "state"
+   "type": "state",
+   "neutral": true
   },
   {
    "en": [
@@ -849,7 +850,8 @@
     "नई दिल्ली"
    ],
    "type": "city",
-   "state": "Delhi"
+   "state": "Delhi",
+   "neutral": true
   }
  ]
 }
